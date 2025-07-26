@@ -1,0 +1,6 @@
+
+{
+  "name": "Moment Calculator Simulator",
+  "description": "An interactive coaching tool for engineering students to master moments. Explore calculations step-by-step, get on-demand AI explanations for each force, and learn core concepts like 'lever arm' and 'equilibrium' in an interactive environment.",
+  "requestFramePermissions": []
+}
