@@ -35,14 +35,14 @@ export default function App() {
   }
   
   return (
-    <div className="h-screen bg-white text-gray-900 font-mono overflow-hidden flex flex-col">
+    <div className="h-screen w-screen max-w-full bg-white text-gray-900 font-mono overflow-hidden flex flex-col">
       <Header />
 
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-2 lg:gap-4 px-2 lg:px-4 pb-2 min-h-0">
-        <div className="lg:col-span-3 bg-gray-50 p-3 rounded-lg shadow-sm border border-gray-300 flex items-center justify-center min-h-0">
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-1 lg:gap-2 px-1 lg:px-2 pb-1 min-h-0 w-full max-w-full overflow-hidden">
+        <div className="lg:col-span-3 bg-gray-50 p-2 rounded-lg shadow-sm border border-gray-300 flex items-center justify-center min-h-0 w-full max-w-full overflow-hidden">
           <Diagram {...appState} expandedForceId={expandedId} />
         </div>
-        <div className="lg:col-span-2 flex flex-col gap-2 min-h-0 overflow-hidden">
+        <div className="lg:col-span-2 flex flex-col gap-1 min-h-0 overflow-hidden w-full max-w-full">
           <WorkflowPanel
             appState={appState}
             onStateChange={handleStateChange}
@@ -55,7 +55,7 @@ export default function App() {
         </div>
       </main>
 
-      <footer className="text-center py-1 text-gray-500 text-xs border-t border-gray-200 bg-gray-50 font-mono">
+      <footer className="text-center py-0.5 text-gray-500 text-xs border-t border-gray-200 bg-gray-50 font-mono w-full max-w-full">
         <p>Built with React, TypeScript, and modern web technologies</p>
       </footer>
     </div>

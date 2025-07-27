@@ -116,6 +116,7 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
   const singleMoment = expandedForce ? calculateSingleForceMoment(expandedForce, distances, pivotPoint) : 0;
 
   return (
+    <div className="w-full h-full max-h-[calc(100vh-120px)] overflow-auto flex items-center justify-center">
     <svg viewBox={`0 0 ${SVG_VIEWBOX_WIDTH} ${SVG_VIEWBOX_HEIGHT}`} className="w-full h-full">
       <defs>
         <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
@@ -186,6 +187,7 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
         {distances.d3 > 0 && <text x={(tPoints.B.x + tPoints.D.x) / 2} y={tPoints.B.y + 35}>d3 = {distances.d3}m</text>}
       </g>
     </svg>
+    </div>
   );
 };
 
