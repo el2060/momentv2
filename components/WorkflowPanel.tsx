@@ -531,7 +531,8 @@ const CalculationBreakdown: React.FC<{
     );
 };
 
-// Learning Activities Component for Clearing Misconceptions
+/*
+// REMOVED: Learning Activities Component - now in separate modal
 const LearningActivities: React.FC<{
     forces: Record<PivotPointId, Force>;
     distances: Distances;
@@ -797,6 +798,7 @@ const LearningActivities: React.FC<{
         </div>
     );
 };
+*/
 
 interface WorkflowPanelProps {
     appState: AppState;
@@ -818,7 +820,7 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
     onStepChange
 }) => {
   const [totalMoment, setTotalMoment] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<'breakdown' | 'concepts' | 'activities'>('breakdown');
+  const [activeTab, setActiveTab] = useState<'breakdown' | 'concepts'>('breakdown');
   const [explanations, setExplanations] = useState<Record<string, string>>({});
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
@@ -976,9 +978,6 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
                             <button onClick={() => { setActiveTab('breakdown'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors border-r border-gray-300 font-mono ${activeTab === 'breakdown' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
                                 Calculation Breakdown
                             </button>
-                            <button onClick={() => { setActiveTab('activities'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors border-r border-gray-300 font-mono ${activeTab === 'activities' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
-                                Learning Activities
-                            </button>
                             <button onClick={() => { setActiveTab('concepts'); onExpandedIdChange(null); }} className={`flex-1 py-3 font-bold text-lg transition-colors font-mono ${activeTab === 'concepts' ? 'bg-gray-200 text-gray-900 border-b-2 border-gray-900' : 'text-gray-600 hover:bg-gray-100'}`}>
                                 Concept Explorer
                             </button>
@@ -992,14 +991,6 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
                             distances={distances}
                             pivotPoint={pivotPoint}
                             totalMoment={totalMoment}
-                        />
-                    )}
-                    {activeTab === 'activities' && (
-                        <LearningActivities
-                            forces={forces}
-                            distances={distances}
-                            pivotPoint={pivotPoint}
-                            onStateChange={onStateChange}
                         />
                     )}
                     {activeTab === 'concepts' && (
