@@ -1,8 +1,6 @@
 import { Force, Distances, PivotPointId } from '../types';
 import { getApplicationPoints } from '../constants';
 
-const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180);
-
 export const calculateSingleForceMoment = (
   force: Force,
   distances: Distances,
@@ -19,10 +17,9 @@ export const calculateSingleForceMoment = (
     const rx = applicationPoint.x - pivotPoint.x;
     const ry = applicationPoint.y - pivotPoint.y;
 
-    // Force vector components
-    const angleRad = degreesToRadians(force.angle);
-    const Fx = force.magnitude * Math.cos(angleRad);
-    const Fy = force.magnitude * Math.sin(angleRad);
+    // Use force components directly (more accurate than converting from magnitude/angle)
+    const Fx = force.fx;
+    const Fy = force.fy;
     
     // Moment = r x F = rx * Fy - ry * Fx
     const moment = rx * Fy - ry * Fx;

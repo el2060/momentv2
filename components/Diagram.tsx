@@ -3,21 +3,24 @@ import { AppState, Point, PivotPointId, Force } from '../types';
 import { SVG_VIEWBOX_WIDTH, SVG_VIEWBOX_HEIGHT, SVG_PADDING, getApplicationPoints } from '../constants';
 import { calculateSingleForceMoment } from '../services/momentCalculator';
 
-const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180);
-
 interface ForceVectorProps {
   from: Point;
-  magnitude: number;
-  angle: number;
+  fx: number;  // x-component of force
+  fy: number;  // y-component of force
   scale: number;
 }
 
-const ForceVector: React.FC<ForceVectorProps> = ({ from, magnitude, angle, scale }) => {
+const ForceVector: React.FC<ForceVectorProps> = ({ from, fx, fy, scale }) => {
+  const magnitude = Math.sqrt(fx * fx + fy * fy);
   const length = Math.max(10, magnitude * scale * 0.5);
-  const angleRad = degreesToRadians(angle);
+  
+  // Calculate the unit vector direction from components
+  const unitX = magnitude > 0 ? fx / magnitude : 0;
+  const unitY = magnitude > 0 ? fy / magnitude : 0;
+  
   const to = {
-    x: from.x + length * Math.cos(angleRad),
-    y: from.y - length * Math.sin(angleRad), // Invert Y for SVG coordinates
+    x: from.x + length * unitX,
+    y: from.y - length * unitY, // Invert Y for SVG coordinates
   };
 
   return (
@@ -27,9 +30,11 @@ const ForceVector: React.FC<ForceVectorProps> = ({ from, magnitude, angle, scale
   );
 };
 
-const LeverArmVisual: React.FC<{ pivot: Point, forceApp: Point, forceAngle: number }> = ({ pivot, forceApp, forceAngle }) => {
-    const angleRad = degreesToRadians(forceAngle);
-    const u = { x: Math.cos(angleRad), y: -Math.sin(angleRad) };
+const LeverArmVisual: React.FC<{ pivot: Point, forceApp: Point, fx: number, fy: number }> = ({ pivot, forceApp, fx, fy }) => {
+    const magnitude = Math.sqrt(fx * fx + fy * fy);
+    if (magnitude === 0) return null;
+    
+    const u = { x: fx / magnitude, y: -fy / magnitude }; // Invert Y for SVG coordinates
     const vecAP = { x: pivot.x - forceApp.x, y: pivot.y - forceApp.y };
     const t = vecAP.x * u.x + vecAP.y * u.y;
     const intersectionPoint = { x: forceApp.x + t * u.x, y: forceApp.y + t * u.y };
@@ -132,10 +137,14 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
       
        {enabledForces.map(force => {
         const from = tPoints[force.id];
-        const angleRad = degreesToRadians(force.angle);
+        const magnitude = Math.sqrt(force.fx * force.fx + force.fy * force.fy);
+        if (magnitude === 0) return null;
+        
+        const unitX = force.fx / magnitude;
+        const unitY = force.fy / magnitude;
         const lineLength = SVG_VIEWBOX_WIDTH * 2;
-        const p1 = { x: from.x + lineLength * Math.cos(angleRad), y: from.y - lineLength * Math.sin(angleRad) };
-        const p2 = { x: from.x - lineLength * Math.cos(angleRad), y: from.y + lineLength * Math.sin(angleRad) };
+        const p1 = { x: from.x + lineLength * unitX, y: from.y - lineLength * unitY };
+        const p2 = { x: from.x - lineLength * unitX, y: from.y + lineLength * unitY };
         return (
             <line 
                 key={`line-of-action-${force.id}`}
@@ -163,8 +172,8 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
           <ForceVector
               key={force.id}
               from={tPoints[force.id]}
-              magnitude={force.magnitude}
-              angle={force.angle}
+              fx={force.fx}
+              fy={force.fy}
               scale={scale}
           />
       ))}
@@ -173,7 +182,8 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
         <LeverArmVisual 
           pivot={tPoints[pivotPoint]}
           forceApp={tPoints[expandedForceId as PivotPointId]}
-          forceAngle={forces[expandedForceId as PivotPointId].angle}
+          fx={forces[expandedForceId as PivotPointId].fx}
+          fy={forces[expandedForceId as PivotPointId].fy}
         />
       )}
 

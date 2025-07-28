@@ -29,9 +29,10 @@ const LearningObjectivesPanel: React.FC = () => {
         { icon: '🧭', text: 'Select pivot point (A, B, C, D)' },
         { icon: '⚡', text: 'Choose forces to include' },
         { icon: '📏', text: 'Adjust magnitude & direction' },
-        { icon: '📐', text: 'Set distances (meters)' },
+        { icon: '📐', text: 'Use angle or components' },
         { icon: '🔄', text: 'See live calculations' },
-        { icon: '↻', text: 'View rotation direction' }
+        { icon: '↻', text: 'View rotation direction' },
+        { icon: '🎯', text: 'Practice with guided activities' }
     ];
 
     return (
@@ -83,18 +84,18 @@ const StickyFormulaBox: React.FC = () => (
                 <div className="text-center">
                     <p className="text-sm font-bold text-gray-700 mb-1 font-mono">Rotation Direction:</p>
                     <div className="flex gap-2">
-                        <div className="flex items-center gap-1 bg-gray-200 border-2 border-gray-400 px-2 py-1 rounded-xl">
-                            <RotationArrow direction="ccw" className="w-6 h-6 text-gray-700" />
+                        <div className="flex items-center gap-1 bg-green-100 border-2 border-green-400 px-3 py-2 rounded-xl">
+                            <RotationArrow direction="ccw" className="w-10 h-10 text-green-700" />
                             <div className="text-center">
-                                <div className="text-sm font-extrabold text-gray-800 font-mono">+ve</div>
-                                <div className="text-xs text-gray-600 font-mono">CCW</div>
+                                <div className="text-base font-extrabold text-green-800 font-mono">+ve</div>
+                                <div className="text-sm text-green-600 font-mono">CCW</div>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1 bg-gray-300 border-2 border-gray-500 px-2 py-1 rounded-xl">
-                            <RotationArrow direction="cw" className="w-6 h-6 text-gray-800" />
+                        <div className="flex items-center gap-1 bg-red-100 border-2 border-red-400 px-3 py-2 rounded-xl">
+                            <RotationArrow direction="cw" className="w-10 h-10 text-red-700" />
                             <div className="text-center">
-                                <div className="text-sm font-extrabold text-gray-900 font-mono">-ve</div>
-                                <div className="text-xs text-gray-700 font-mono">CW</div>
+                                <div className="text-base font-extrabold text-red-800 font-mono">-ve</div>
+                                <div className="text-sm text-red-600 font-mono">CW</div>
                             </div>
                         </div>
                     </div>
@@ -122,7 +123,7 @@ const Header: React.FC = () => {
                             Moment of a Force Interactive Simulator
                         </h1>
                         <p className="text-xs text-gray-600 mt-0.5 italic font-mono">
-                            Master the principles of static equilibrium through interactive learning
+                            Master the principles of mechanics through interactive learning
                         </p>
                     </div>
                     

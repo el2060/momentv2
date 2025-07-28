@@ -13,6 +13,15 @@ export interface Force {
   isEnabled: boolean;
   magnitude: number; // in Newtons (N)
   angle: number;     // in degrees
+  // Component-based input
+  useComponents: boolean; // true for Fx/Fy input, false for magnitude/angle
+  fx: number;        // x-component in Newtons (N)
+  fy: number;        // y-component in Newtons (N)
+  // Acute angle with direction approach
+  useAcuteAngle: boolean; // true for acute angle + direction, false for full angle
+  acuteAngle: number;     // acute angle (0-90 degrees)
+  xDirection: 'right' | 'left';   // direction for x-component
+  yDirection: 'up' | 'down';      // direction for y-component
 }
 
 export interface Distances {

@@ -2,10 +2,62 @@
 import { AppState, Distances, Force, PivotPointId, Point, ConceptId } from './types';
 
 export const INITIAL_FORCES: Record<PivotPointId, Force> = {
-  A: { id: 'A', name: "Force F_A at A", isEnabled: true, magnitude: 50, angle: 135 },
-  B: { id: 'B', name: "Force F_C at B", isEnabled: false, magnitude: 60, angle: 225 },
-  C: { id: 'C', name: "Force F_B at C", isEnabled: true, magnitude: 75, angle: 270 },
-  D: { id: 'D', name: "Force F_D at D", isEnabled: true, magnitude: 40, angle: 45 },
+  A: { 
+    id: 'A', 
+    name: "Force F_A at A", 
+    isEnabled: true, 
+    magnitude: 50, 
+    angle: 135, 
+    useComponents: false, 
+    fx: -35.36, 
+    fy: 35.36,
+    useAcuteAngle: false,
+    acuteAngle: 45,
+    xDirection: 'left',
+    yDirection: 'up'
+  },
+  B: { 
+    id: 'B', 
+    name: "Force F_C at B", 
+    isEnabled: false, 
+    magnitude: 60, 
+    angle: 225, 
+    useComponents: false, 
+    fx: -42.43, 
+    fy: -42.43,
+    useAcuteAngle: false,
+    acuteAngle: 45,
+    xDirection: 'left',
+    yDirection: 'down'
+  },
+  C: { 
+    id: 'C', 
+    name: "Force F_B at C", 
+    isEnabled: true, 
+    magnitude: 75, 
+    angle: 270, 
+    useComponents: false, 
+    fx: 0, 
+    fy: -75,
+    useAcuteAngle: false,
+    acuteAngle: 90,
+    xDirection: 'right',
+    yDirection: 'down'
+  },
+  D: { 
+    id: 'D', 
+    name: "Force F_D at D", 
+    isEnabled: true, 
+    magnitude: 40, 
+    angle: 45, 
+    useComponents: false, 
+    fx: 28.28, 
+    fy: 28.28,
+    useAcuteAngle: false,
+    acuteAngle: 45,
+    xDirection: 'right',
+    yDirection: 'up'
+  },
 };
 
 export const INITIAL_DISTANCES: Distances = {
