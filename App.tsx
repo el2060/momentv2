@@ -43,7 +43,7 @@ export default function App() {
       {/* Floating Learning Activities Button */}
       <button
         onClick={() => setIsLearningModalOpen(true)}
-        className="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-full shadow-lg z-40 font-bold text-sm transition-all hover:scale-105"
+        className="fixed top-6 right-6 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-full shadow-lg z-40 font-bold text-sm transition-all hover:scale-105"
         title="Open Learning Activities"
       >
         🎯 Learning Activities

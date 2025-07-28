@@ -222,149 +222,62 @@ const LearningActivitiesModal: React.FC<LearningActivitiesModalProps> = ({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b border-gray-200">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-bold text-gray-900 font-mono">
-                            🎯 Learning Activities - Interactive Practice
-                        </h2>
-                        <button
-                            onClick={onClose}
-                            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                        >
-                            ×
-                        </button>
-                    </div>
-                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                        <p className="text-sm text-blue-800">
-                            <span className="font-bold">Question {currentQuestion + 1} of {questions.length}:</span> {currentQ.title}
-                        </p>
-                        <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
-                            <div 
-                                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                            ></div>
-                        </div>
-                    </div>
-                </div>
+        <div
+      className={`fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+    >
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 flex flex-col gap-4">
+        <header className="flex justify-between items-center">
+          <h2 className="text-xl font-bold">Learning Activities - Interactive Practice</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">&times;</button>
+        </header>
 
-                <div className="p-6">
-                    <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300 mb-4">
-                        <h4 className="text-lg font-bold text-gray-900 mb-3">{currentQ.question}</h4>
-                        <div className="bg-yellow-50 p-3 rounded border border-yellow-200 mb-4">
-                            <p className="text-sm text-yellow-800">
-                                <span className="font-bold">📋 Instructions:</span> {currentQ.instruction}
-                            </p>
-                        </div>
+        <div className="flex gap-4">
+          {/* Instructions Panel */}
+          <div className="w-1/3 bg-gray-100 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold">Instructions</h3>
+            <p>{questions[currentQuestion].instruction}</p>
+          </div>
 
-                        {currentQ.setup && (
-                            <div className="mb-4">
-                                <button
-                                    onClick={applySetup}
-                                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-bold text-sm transition-colors"
-                                >
-                                    🔧 Auto-Setup Configuration
-                                </button>
-                                <p className="text-xs text-gray-600 mt-1">
-                                    Click to automatically configure the diagram for this question, then observe the results.
-                                </p>
-                            </div>
-                        )}
+          {/* Canvas Interaction Panel */}
+          <div className="w-2/3 bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold">Question {currentQuestion + 1} of {questions.length}</h3>
+            <p>{questions[currentQuestion].question}</p>
 
-                        {currentQ.type === "multiple-choice" && currentQ.options && (
-                            <div className="space-y-2 mb-4">
-                                {currentQ.options.map((option, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => handleAnswerSubmit(option)}
-                                        disabled={showAnswer}
-                                        className={`w-full text-left p-3 rounded border-2 transition-colors font-mono ${
-                                            showAnswer && option === currentQ.correctAnswer
-                                                ? 'bg-green-100 border-green-400 text-green-800'
-                                                : showAnswer && userAnswers[currentQuestion] === option && option !== currentQ.correctAnswer
-                                                ? 'bg-red-100 border-red-400 text-red-800'
-                                                : !showAnswer
-                                                ? 'bg-white border-gray-300 hover:bg-gray-50 text-gray-900'
-                                                : 'bg-gray-100 border-gray-300 text-gray-600'
-                                        }`}
-                                    >
-                                        {option}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-
-                        {currentQ.type === "observation" && (
-                            <div className="mb-4">
-                                <button
-                                    onClick={() => setShowAnswer(true)}
-                                    disabled={showAnswer}
-                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-bold text-sm transition-colors disabled:opacity-50"
-                                >
-                                    🔍 Show Explanation
-                                </button>
-                            </div>
-                        )}
-
-                        {showAnswer && (
-                            <div className={`p-4 rounded-lg border-2 ${
-                                currentQ.type === "multiple-choice" && currentQ.correctAnswer
-                                    ? isCorrect 
-                                        ? 'bg-green-50 border-green-400' 
-                                        : 'bg-red-50 border-red-400'
-                                    : 'bg-blue-50 border-blue-400'
-                            }`}>
-                                <h5 className="font-bold text-gray-900 mb-2">
-                                    {currentQ.type === "multiple-choice" && currentQ.correctAnswer
-                                        ? isCorrect ? '✅ Correct!' : '❌ Incorrect'
-                                        : '💡 Explanation:'
-                                    }
-                                </h5>
-                                <p className="text-sm text-gray-700 leading-relaxed">{currentQ.answer}</p>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                        <button
-                            onClick={previousQuestion}
-                            disabled={currentQuestion === 0}
-                            className="px-4 py-2 bg-gray-600 text-white rounded font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            ← Previous
-                        </button>
-                        
-                        <span className="text-sm text-gray-600 font-mono">
-                            Question {currentQuestion + 1} of {questions.length}
-                        </span>
-                        
-                        <button
-                            onClick={nextQuestion}
-                            disabled={currentQuestion === questions.length - 1}
-                            className="px-4 py-2 bg-gray-600 text-white rounded font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Next →
-                        </button>
-                    </div>
-
-                    {currentQuestion === questions.length - 1 && showAnswer && (
-                        <div className="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                            <h3 className="font-bold text-purple-900 mb-2">🎉 Congratulations!</h3>
-                            <p className="text-sm text-purple-800">
-                                You've completed all the learning activities! You should now have a clearer understanding of:
-                            </p>
-                            <ul className="list-disc list-inside text-sm text-purple-800 mt-2 space-y-1">
-                                <li>How to identify perpendicular distances correctly</li>
-                                <li>The relationship between force direction and moment direction</li>
-                                <li>Why forces through pivot points create zero moment</li>
-                                <li>The sign convention for moments (CCW = positive, CW = negative)</li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
-            </div>
+            {/* Options or Interaction */}
+            {questions[currentQuestion].type === 'multiple-choice' && (
+              <div className="flex flex-col gap-2">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <button
+                    key={index}
+                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+                    onClick={() => setUserAnswers({ ...userAnswers, [currentQuestion]: option })}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        <footer className="flex justify-between items-center">
+          <button
+            onClick={() => handleQuestionNavigation('previous')}
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+            disabled={currentQuestion === 0}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handleQuestionNavigation('next')}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+            disabled={currentQuestion === questions.length - 1}
+          >
+            Next
+          </button>
+        </footer>
+      </div>
+    </div>
     );
 };
 
