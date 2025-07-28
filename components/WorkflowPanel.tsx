@@ -149,42 +149,51 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
             </div>
             {force.isEnabled && (
                 <div className="space-y-3 pt-2 border-t-2 border-gray-300">
-                    {/* Input Method Toggle */}
-                    <div className="flex items-center justify-center gap-2 p-2 bg-gray-50 rounded-lg border border-gray-300">
-                        <span className="text-lg font-bold text-gray-900 font-mono">Input Method:</span>
+                    {/* Input Method Toggle with Educational Emphasis */}
+                    <div className="flex flex-col gap-2 p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
+                        <div className="flex items-center justify-center gap-2">
+                            <span className="text-lg font-bold text-blue-800 font-mono">Input Method:</span>
+                            <span className="text-sm text-blue-600 italic">(Acute angle recommended for clarity)</span>
+                        </div>
                         <div className="flex rounded-lg overflow-hidden border-2 border-gray-400">
                             <button
                                 type="button"
-                                onClick={() => setInputMethod('full-angle')}
-                                className={`px-2 py-1 text-xs font-bold font-mono transition-colors ${
-                                    getInputMethod() === 'full-angle'
-                                        ? 'bg-gray-800 text-white' 
-                                        : 'bg-white text-gray-800 hover:bg-gray-100'
-                                }`}
-                            >
-                                Full Angle
-                            </button>
-                            <button
-                                type="button"
                                 onClick={() => setInputMethod('acute')}
-                                className={`px-2 py-1 text-xs font-bold font-mono transition-colors ${
+                                className={`px-3 py-2 text-sm font-bold font-mono transition-colors flex-1 ${
                                     getInputMethod() === 'acute'
-                                        ? 'bg-gray-800 text-white' 
-                                        : 'bg-white text-gray-800 hover:bg-gray-100'
+                                        ? 'bg-blue-600 text-white shadow-md' 
+                                        : 'bg-white text-gray-800 hover:bg-blue-50'
                                 }`}
+                                title="Recommended: Uses angles 0-90° with clear direction indicators"
                             >
-                                Acute + Direction
+                                ⭐ Acute + Direction
+                                <div className="text-xs opacity-80">0-90° + Direction</div>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setInputMethod('components')}
-                                className={`px-2 py-1 text-xs font-bold font-mono transition-colors ${
+                                className={`px-3 py-2 text-sm font-bold font-mono transition-colors flex-1 ${
                                     getInputMethod() === 'components'
                                         ? 'bg-gray-800 text-white' 
                                         : 'bg-white text-gray-800 hover:bg-gray-100'
                                 }`}
+                                title="Direct component input for advanced users"
                             >
                                 Components
+                                <div className="text-xs opacity-80">Fx, Fy Direct</div>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setInputMethod('full-angle')}
+                                className={`px-3 py-2 text-sm font-bold font-mono transition-colors flex-1 ${
+                                    getInputMethod() === 'full-angle'
+                                        ? 'bg-gray-800 text-white' 
+                                        : 'bg-white text-gray-800 hover:bg-gray-100'
+                                }`}
+                                title="Full angle 0-360° - may cause confusion with component resolution"
+                            >
+                                Full Angle
+                                <div className="text-xs opacity-80">0-360° (Advanced)</div>
                             </button>
                         </div>
                     </div>
@@ -219,6 +228,17 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
                             {getInputMethod() === 'acute' && (
                                 // Acute angle with direction inputs
                                 <>
+                                    {/* Educational explanation for acute angle method */}
+                                    <div className="mb-4 p-3 bg-green-50 border-2 border-green-200 rounded-lg">
+                                        <h4 className="font-bold text-green-800 mb-2 text-sm">✅ Why Acute Angles (0-90°)?</h4>
+                                        <ul className="text-xs text-green-700 space-y-1">
+                                            <li>• <strong>Clearer component resolution:</strong> Always use cos() and sin() with angles ≤ 90°</li>
+                                            <li>• <strong>Avoid confusion:</strong> No need to remember quadrant rules for angles {'>'}90°</li>
+                                            <li>• <strong>Intuitive directions:</strong> Simply choose direction (right/left, up/down)</li>
+                                            <li>• <strong>Less calculation errors:</strong> Positive angle values with clear direction signs</li>
+                                        </ul>
+                                    </div>
+                                    
                                     <SliderInput 
                                         label="Magnitude" 
                                         value={force.magnitude} 
@@ -331,14 +351,19 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
                                     <div className="text-gray-600">Magnitude: <span className="font-bold text-gray-900">{force.magnitude.toFixed(1)} N</span></div>
                                     <div className="text-gray-600">Full Angle: <span className="font-bold text-gray-900">{force.angle.toFixed(1)}°</span></div>
                                 </div>
-                                <div className="space-y-1">
-                                    <div className="text-gray-600">Acute Angle: <span className="font-bold text-gray-900">{force.acuteAngle.toFixed(1)}°</span></div>
-                                    <div className="text-gray-600">Direction: <span className="font-bold text-gray-900">{force.xDirection === 'right' ? '→' : '←'} {force.yDirection === 'up' ? '↑' : '↓'}</span></div>
+                                <div className="space-y-1 bg-green-50 p-2 rounded border border-green-200">
+                                    <div className="text-green-600">✅ Acute Angle: <span className="font-bold text-green-800">{force.acuteAngle.toFixed(1)}°</span> <span className="text-green-500">(0-90°)</span></div>
+                                    <div className="text-green-600">✅ Direction: <span className="font-bold text-green-800">{force.xDirection === 'right' ? '→ Right' : '← Left'}, {force.yDirection === 'up' ? '↑ Up' : '↓ Down'}</span></div>
                                 </div>
                                 <div className="space-y-1">
                                     <div className="text-gray-600">Fx: <span className="font-bold text-gray-900">{force.fx.toFixed(1)} N</span></div>
                                     <div className="text-gray-600">Fy: <span className="font-bold text-gray-900">{force.fy.toFixed(1)} N</span></div>
                                 </div>
+                            </div>
+                            {/* Educational note */}
+                            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
+                                <span className="font-bold text-blue-800">💡 Educational Tip:</span>
+                                <span className="text-blue-700"> Components: Fx = {force.magnitude.toFixed(1)} × cos({force.acuteAngle.toFixed(1)}°) = {Math.abs(force.fx).toFixed(1)}N, then apply direction sign</span>
                             </div>
                         </div>
                     </div>

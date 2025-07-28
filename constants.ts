@@ -11,7 +11,7 @@ export const INITIAL_FORCES: Record<PivotPointId, Force> = {
     useComponents: false, 
     fx: -35.36, 
     fy: 35.36,
-    useAcuteAngle: false,
+    useAcuteAngle: true,  // Default to acute angle to avoid student confusion
     acuteAngle: 45,
     xDirection: 'left',
     yDirection: 'up'
@@ -25,7 +25,7 @@ export const INITIAL_FORCES: Record<PivotPointId, Force> = {
     useComponents: false, 
     fx: -42.43, 
     fy: -42.43,
-    useAcuteAngle: false,
+    useAcuteAngle: true,  // Default to acute angle to avoid student confusion
     acuteAngle: 45,
     xDirection: 'left',
     yDirection: 'down'
@@ -39,7 +39,7 @@ export const INITIAL_FORCES: Record<PivotPointId, Force> = {
     useComponents: false, 
     fx: 0, 
     fy: -75,
-    useAcuteAngle: false,
+    useAcuteAngle: true,  // Default to acute angle to avoid student confusion
     acuteAngle: 90,
     xDirection: 'right',
     yDirection: 'down'
@@ -53,7 +53,7 @@ export const INITIAL_FORCES: Record<PivotPointId, Force> = {
     useComponents: false, 
     fx: 28.28, 
     fy: 28.28,
-    useAcuteAngle: false,
+    useAcuteAngle: true,  // Default to acute angle to avoid student confusion
     acuteAngle: 45,
     xDirection: 'right',
     yDirection: 'up'
