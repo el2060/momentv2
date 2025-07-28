@@ -5,7 +5,6 @@ import { AppState, ConceptId, Force, PivotPointId, Distances } from '../types';
 import { CONCEPTS, getApplicationPoints } from '../constants';
 import { calculateTotalMoment, calculateSingleForceMoment } from '../services/momentCalculator';
 import Stepper from './Stepper';
-import RotationArrow from './RotationArrow';
 
 
 // --- Child Components ---
@@ -966,7 +965,6 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
                     <div className="bg-white p-4 rounded-lg border border-purple-200 mt-4">
                         <p className="text-xl font-bold text-gray-700 mb-2 font-mono">🔄 RESULTANT ROTATION DIRECTION:</p>
                         <div className={`flex items-center justify-center gap-4 text-xl font-bold ${getRotationDirection().color} font-mono`}>
-                            {getRotationDirection().icon && <RotationArrow direction={getRotationDirection().icon!} className="w-8 h-8" />}
                             <span className="bg-gray-100 px-4 py-2 rounded-full">{getRotationDirection().text}</span>
                         </div>
                     </div>

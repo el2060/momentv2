@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import RotationArrow from './RotationArrow';
 
 // NP Logo Component
 const NPLogo: React.FC = () => (
@@ -85,14 +84,14 @@ const StickyFormulaBox: React.FC = () => (
                     <p className="text-sm font-bold text-gray-700 mb-1 font-mono">Rotation Direction:</p>
                     <div className="flex gap-2">
                         <div className="flex items-center gap-1 bg-green-100 border-2 border-green-400 px-3 py-2 rounded-xl">
-                            <RotationArrow direction="ccw" className="w-10 h-10 text-green-700" />
+                            <div className="w-10 h-10 flex items-center justify-center text-green-700 text-2xl">↺</div>
                             <div className="text-center">
                                 <div className="text-base font-extrabold text-green-800 font-mono">+ve</div>
                                 <div className="text-sm text-green-600 font-mono">CCW</div>
                             </div>
                         </div>
                         <div className="flex items-center gap-1 bg-red-100 border-2 border-red-400 px-3 py-2 rounded-xl">
-                            <RotationArrow direction="cw" className="w-10 h-10 text-red-700" />
+                            <div className="w-10 h-10 flex items-center justify-center text-red-700 text-2xl">↻</div>
                             <div className="text-center">
                                 <div className="text-base font-extrabold text-red-800 font-mono">-ve</div>
                                 <div className="text-sm text-red-600 font-mono">CW</div>
