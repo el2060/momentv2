@@ -5,6 +5,7 @@ import Diagram from './components/Diagram';
 import WorkflowPanel from './components/WorkflowPanel';
 import Header from './components/Header';
 import LearningActivitiesModal from './components/LearningActivitiesModal';
+import RotationVisualization from './components/RotationVisualization';
 
 export default function App() {
   const [appState, setAppState] = useState<AppState>(INITIAL_STATE);
@@ -49,7 +50,20 @@ export default function App() {
         🎯 Learning Activities
       </button>
 
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-1 lg:gap-2 px-1 lg:px-2 pb-1 min-h-0 w-full max-w-full overflow-hidden">
+      {/* Reset Button */}
+      <button
+        onClick={() => {
+          setAppState(INITIAL_STATE);
+          setCurrentStep(1);
+          setExpandedId(null);
+        }}
+        className="fixed top-6 left-6 bg-gray-600 hover:bg-gray-800 text-white px-4 py-3 rounded-full shadow-lg z-40 font-bold text-sm transition-all hover:scale-105"
+        title="Reset All"
+      >
+        🔄 Reset All
+      </button>
+
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-6 gap-1 lg:gap-2 px-1 lg:px-2 pb-1 min-h-0 w-full max-w-full overflow-hidden">
         <div className="lg:col-span-3 bg-gray-50 p-2 rounded-lg shadow-sm border border-gray-300 flex items-center justify-center min-h-0 w-full max-w-full overflow-hidden">
           <Diagram {...appState} expandedForceId={expandedId} />
         </div>
@@ -62,6 +76,14 @@ export default function App() {
             onExpandedIdChange={setExpandedId}
             currentStep={currentStep}
             onStepChange={handleStepChange}
+          />
+        </div>
+        {/* Rotation Visualization Panel */}
+        <div className="lg:col-span-1 flex flex-col items-center justify-center bg-white border-l border-gray-300 p-4 min-h-0">
+          <RotationVisualization
+            forces={appState.forces}
+            distances={appState.distances}
+            pivotPoint={appState.pivotPoint}
           />
         </div>
       </main>

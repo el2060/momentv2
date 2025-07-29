@@ -12,15 +12,13 @@ interface ForceVectorProps {
 
 const ForceVector: React.FC<ForceVectorProps> = ({ from, fx, fy, scale }) => {
   const magnitude = Math.sqrt(fx * fx + fy * fy);
-  const length = Math.max(10, magnitude * scale * 0.5);
-  
-  // Calculate the unit vector direction from components
+  // Use fixed length for arrow regardless of magnitude
+  const fixedLength = 60; // px, adjust as needed for visibility
   const unitX = magnitude > 0 ? fx / magnitude : 0;
   const unitY = magnitude > 0 ? fy / magnitude : 0;
-  
   const to = {
-    x: from.x + length * unitX,
-    y: from.y - length * unitY, // Invert Y for SVG coordinates
+    x: from.x + fixedLength * unitX,
+    y: from.y - fixedLength * unitY, // Invert Y for SVG coordinates
   };
 
   return (
@@ -33,7 +31,8 @@ const ForceVector: React.FC<ForceVectorProps> = ({ from, fx, fy, scale }) => {
 const LeverArmVisual: React.FC<{ pivot: Point, forceApp: Point, fx: number, fy: number }> = ({ pivot, forceApp, fx, fy }) => {
     const magnitude = Math.sqrt(fx * fx + fy * fy);
     if (magnitude === 0) return null;
-    
+    // Use fixed length for lever arm arrow
+    const fixedLength = 60;
     const u = { x: fx / magnitude, y: -fy / magnitude }; // Invert Y for SVG coordinates
     const vecAP = { x: pivot.x - forceApp.x, y: pivot.y - forceApp.y };
     const t = vecAP.x * u.x + vecAP.y * u.y;
@@ -42,13 +41,13 @@ const LeverArmVisual: React.FC<{ pivot: Point, forceApp: Point, fx: number, fy: 
     if (Math.hypot(pivot.x - intersectionPoint.x, pivot.y - intersectionPoint.y) < 1) {
         return null;
     }
-    
+
     const markerSize = 6;
     const p_perp = { x: -u.y, y: u.x };
-    const p1 = { x: intersectionPoint.x + markerSize * u.x, y: intersectionPoint.y + markerSize * u.y };
+    const p1 = { x: intersectionPoint.x + fixedLength * u.x, y: intersectionPoint.y + fixedLength * u.y };
     const p2 = { x: p1.x + markerSize * p_perp.x, y: p1.y + markerSize * p_perp.y };
     const p3 = { x: intersectionPoint.x + markerSize * p_perp.x, y: intersectionPoint.y + markerSize * p_perp.y };
-    
+
     return (
         <g>
             <line x1={pivot.x} y1={pivot.y} x2={intersectionPoint.x} y2={intersectionPoint.y} className="stroke-gray-700" strokeWidth="3" strokeDasharray="6 3" />
@@ -119,85 +118,94 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
 
   const expandedForce = expandedForceId ? forces[expandedForceId as PivotPointId] : null;
   const singleMoment = expandedForce ? calculateSingleForceMoment(expandedForce, distances, pivotPoint) : 0;
+  const totalMoment = pivotPoint
+    ? Object.values(forces)
+        .filter(f => f.isEnabled)
+        .reduce((sum, f) => sum + calculateSingleForceMoment(f, distances, pivotPoint), 0)
+    : 0;
 
   return (
     <div className="w-full h-full max-h-[calc(100vh-120px)] overflow-auto flex items-center justify-center">
-    <svg viewBox={`0 0 ${SVG_VIEWBOX_WIDTH} ${SVG_VIEWBOX_HEIGHT}`} className="w-full h-full">
-      <defs>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" className="fill-current" />
-        </marker>
-        <marker id="rotation-arrowhead-ccw" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-            <polygon points="0 0, 6 3, 0 6" className="fill-gray-800" />
-        </marker>
-        <marker id="rotation-arrowhead-cw" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto">
-            <polygon points="6 0, 0 3, 6 6" className="fill-gray-600" />
-        </marker>
-      </defs>
-      
-       {enabledForces.map(force => {
-        const from = tPoints[force.id];
-        const magnitude = Math.sqrt(force.fx * force.fx + force.fy * force.fy);
-        if (magnitude === 0) return null;
+      <svg viewBox={`0 0 ${SVG_VIEWBOX_WIDTH} ${SVG_VIEWBOX_HEIGHT}`} className="w-full h-full">
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" className="fill-current" />
+          </marker>
+          <marker id="rotation-arrowhead-ccw" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <polygon points="0 0, 6 3, 0 6" className="fill-gray-800" />
+          </marker>
+          <marker id="rotation-arrowhead-cw" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto">
+              <polygon points="6 0, 0 3, 6 6" className="fill-gray-600" />
+          </marker>
+        </defs>
         
-        const unitX = force.fx / magnitude;
-        const unitY = force.fy / magnitude;
-        const lineLength = SVG_VIEWBOX_WIDTH * 2;
-        const p1 = { x: from.x + lineLength * unitX, y: from.y - lineLength * unitY };
-        const p2 = { x: from.x - lineLength * unitX, y: from.y + lineLength * unitY };
-        return (
-            <line 
-                key={`line-of-action-${force.id}`}
-                x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
-                className="stroke-gray-500"
-                strokeWidth="2"
-                strokeDasharray="8 4" />
-        );
-      })}
+         {enabledForces.map(force => {
+          const from = tPoints[force.id];
+          const magnitude = Math.sqrt(force.fx * force.fx + force.fy * force.fy);
+          if (magnitude === 0) return null;
+          
+          const unitX = force.fx / magnitude;
+          const unitY = force.fy / magnitude;
+          const lineLength = SVG_VIEWBOX_WIDTH * 2;
+          const p1 = { x: from.x + lineLength * unitX, y: from.y - lineLength * unitY };
+          const p2 = { x: from.x - lineLength * unitX, y: from.y + lineLength * unitY };
+          return (
+              <line 
+                  key={`line-of-action-${force.id}`}
+                  x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y}
+                  className="stroke-gray-500"
+                  strokeWidth="2"
+                  strokeDasharray="8 4" />
+          );
+        })}
 
-      <path d={pathData} stroke="#1f2937" strokeWidth="12" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={pathData} stroke="#1f2937" strokeWidth="12" fill="none" strokeLinecap="round" strokeLinejoin="round" />
 
-      {Object.entries(tPoints).map(([id, p]) => (
-        <g key={id}>
-          <circle 
-            cx={p.x} cy={p.y} r={id === pivotPoint ? 12 : 8} 
-            className={id === pivotPoint ? "fill-gray-800 stroke-gray-900" : "fill-gray-400 stroke-gray-600"}
-            strokeWidth="3" 
+        {Object.entries(tPoints).map(([id, p]) => (
+          <g key={id}>
+            <circle 
+              cx={p.x} cy={p.y} r={id === pivotPoint ? 14 : 8} 
+              className={id === pivotPoint ? "fill-yellow-400 stroke-yellow-700 animate-pulse" : "fill-gray-400 stroke-gray-600"}
+              strokeWidth="4" 
+            />
+            <text x={p.x + 20} y={p.y - 20} className="fill-gray-900 font-bold text-base tracking-wider font-mono">{id}</text>
+          </g>
+        ))}
+
+        {enabledForces.map(force => (
+            <ForceVector
+                key={force.id}
+                from={tPoints[force.id]}
+                fx={force.fx}
+                fy={force.fy}
+                scale={scale}
+            />
+        ))}
+        
+        {expandedForceId && expandedForce?.isEnabled && pivotPoint && (
+          <LeverArmVisual 
+            pivot={tPoints[pivotPoint]}
+            forceApp={tPoints[expandedForceId as PivotPointId]}
+            fx={forces[expandedForceId as PivotPointId].fx}
+            fy={forces[expandedForceId as PivotPointId].fy}
           />
-          <text x={p.x + 20} y={p.y - 20} className="fill-gray-900 font-bold text-base tracking-wider font-mono">{id}</text>
+        )}
+
+        {expandedForceId && singleMoment !== 0 && pivotPoint && (
+            <RotationIndicator center={tPoints[pivotPoint]} moment={singleMoment} />
+        )}
+        {/* Live rotation indicator for total moment */}
+        {pivotPoint && Math.abs(totalMoment) > 0.01 && (
+          <RotationIndicator center={tPoints[pivotPoint]} moment={totalMoment} />
+        )}
+
+        <g className="fill-gray-900 text-xs font-mono font-bold">
+          {distances.d1 > 0 && <text x={(tPoints.A.x + tPoints.C.x) / 2} y={tPoints.A.y - 25}>d1 = {distances.d1}m</text>}
+          <text x={tPoints.A.x - 60} y={(tPoints.A.y + tPoints.B.y) / 2} dominantBaseline="middle">d2 = {distances.d2}m</text>
+          {distances.d3 > 0 && <text x={(tPoints.B.x + tPoints.D.x) / 2} y={tPoints.B.y + 35}>d3 = {distances.d3}m</text>}
         </g>
-      ))}
-
-      {enabledForces.map(force => (
-          <ForceVector
-              key={force.id}
-              from={tPoints[force.id]}
-              fx={force.fx}
-              fy={force.fy}
-              scale={scale}
-          />
-      ))}
-      
-      {expandedForceId && expandedForce?.isEnabled && pivotPoint && (
-        <LeverArmVisual 
-          pivot={tPoints[pivotPoint]}
-          forceApp={tPoints[expandedForceId as PivotPointId]}
-          fx={forces[expandedForceId as PivotPointId].fx}
-          fy={forces[expandedForceId as PivotPointId].fy}
-        />
-      )}
-
-      {expandedForceId && singleMoment !== 0 && pivotPoint && (
-          <RotationIndicator center={tPoints[pivotPoint]} moment={singleMoment} />
-      )}
-
-      <g className="fill-gray-900 text-xs font-mono font-bold">
-        {distances.d1 > 0 && <text x={(tPoints.A.x + tPoints.C.x) / 2} y={tPoints.A.y - 25}>d1 = {distances.d1}m</text>}
-        <text x={tPoints.A.x - 60} y={(tPoints.A.y + tPoints.B.y) / 2} dominantBaseline="middle">d2 = {distances.d2}m</text>
-        {distances.d3 > 0 && <text x={(tPoints.B.x + tPoints.D.x) / 2} y={tPoints.B.y + 35}>d3 = {distances.d3}m</text>}
-      </g>
-    </svg>
-    </div>
+      </svg>
+      </div>
   );
 };
 

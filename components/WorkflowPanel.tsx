@@ -148,201 +148,31 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
             </div>
             {force.isEnabled && (
                 <div className="space-y-3 pt-2 border-t-2 border-gray-300">
-                    {/* Input Method Selection */}
-                    <div className="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-300">
-                        <div className="flex items-center justify-center gap-2">
-                            <span className="text-lg font-bold text-gray-800 font-mono">Input Method:</span>
-                        </div>
-                        <div className="flex rounded-lg overflow-hidden border-2 border-gray-400">
-                            <button
-                                type="button"
-                                onClick={() => setInputMethod('acute')}
-                                className={`px-3 py-2 text-sm font-bold font-mono transition-colors flex-1 ${
-                                    getInputMethod() === 'acute'
-                                        ? 'bg-blue-600 text-white shadow-md' 
-                                        : 'bg-white text-gray-800 hover:bg-blue-50'
-                                }`}
-                            >
-                                Acute + Direction
-                                <div className="text-xs opacity-80">0-90° + Direction</div>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setInputMethod('components')}
-                                className={`px-3 py-2 text-sm font-bold font-mono transition-colors flex-1 ${
-                                    getInputMethod() === 'components'
-                                        ? 'bg-gray-800 text-white' 
-                                        : 'bg-white text-gray-800 hover:bg-gray-100'
-                                }`}
-                            >
-                                Components
-                                <div className="text-xs opacity-80">Fx, Fy Direct</div>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setInputMethod('full-angle')}
-                                className={`px-3 py-2 text-sm font-bold font-mono transition-colors flex-1 ${
-                                    getInputMethod() === 'full-angle'
-                                        ? 'bg-gray-800 text-white' 
-                                        : 'bg-white text-gray-800 hover:bg-gray-100'
-                                }`}
-                            >
-                                Full Angle
-                                <div className="text-xs opacity-80">0-360°</div>
-                            </button>
-                        </div>
-                    </div>
-
                     <div className="bg-white p-2 rounded-lg border border-gray-300">
                         <h4 className="text-lg font-bold text-gray-900 mb-2 font-mono">Adjust Force Parameters:</h4>
                         <div className="space-y-4">
-                            {getInputMethod() === 'full-angle' && (
-                                // Full Angle inputs (original)
-                                <>
-                                    <SliderInput 
-                                        label="Magnitude" 
-                                        value={force.magnitude} 
-                                        min={0} 
-                                        max={200} 
-                                        step={1} 
-                                        unit="N" 
-                                        onChange={(v) => updateFromMagnitudeAngle(v, force.angle)} 
-                                    />
-                                    <SliderInput 
-                                        label="Angle (0-360°)" 
-                                        value={force.angle} 
-                                        min={0} 
-                                        max={360} 
-                                        step={1} 
-                                        unit="°" 
-                                        onChange={(v) => updateFromMagnitudeAngle(force.magnitude, v)} 
-                                    />
-                                </>
-                            )}
-                            
-                            {getInputMethod() === 'acute' && (
-                                // Acute angle with direction inputs
-                                <>
-                                    <SliderInput 
-                                        label="Magnitude" 
-                                        value={force.magnitude} 
-                                        min={0} 
-                                        max={200} 
-                                        step={1} 
-                                        unit="N" 
-                                        onChange={(v) => updateFromAcuteAngle(v, force.acuteAngle, force.xDirection, force.yDirection)} 
-                                    />
-                                    <SliderInput 
-                                        label="Acute Angle (0-90°)" 
-                                        value={force.acuteAngle} 
-                                        min={0} 
-                                        max={90} 
-                                        step={1} 
-                                        unit="°" 
-                                        onChange={(v) => updateFromAcuteAngle(force.magnitude, v, force.xDirection, force.yDirection)} 
-                                    />
-                                    
-                                    {/* Direction Controls */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-sm font-bold text-gray-900 mb-2 font-mono">X-Direction:</label>
-                                            <div className="flex rounded-lg overflow-hidden border-2 border-gray-400">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => updateFromAcuteAngle(force.magnitude, force.acuteAngle, 'right', force.yDirection)}
-                                                    className={`flex-1 px-3 py-1 text-sm font-bold font-mono transition-colors ${
-                                                        force.xDirection === 'right'
-                                                            ? 'bg-gray-800 text-white' 
-                                                            : 'bg-white text-gray-800 hover:bg-gray-100'
-                                                    }`}
-                                                >
-                                                    Right →
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => updateFromAcuteAngle(force.magnitude, force.acuteAngle, 'left', force.yDirection)}
-                                                    className={`flex-1 px-3 py-1 text-sm font-bold font-mono transition-colors ${
-                                                        force.xDirection === 'left'
-                                                            ? 'bg-gray-800 text-white' 
-                                                            : 'bg-white text-gray-800 hover:bg-gray-100'
-                                                    }`}
-                                                >
-                                                    ← Left
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-gray-900 mb-2 font-mono">Y-Direction:</label>
-                                            <div className="flex rounded-lg overflow-hidden border-2 border-gray-400">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => updateFromAcuteAngle(force.magnitude, force.acuteAngle, force.xDirection, 'up')}
-                                                    className={`flex-1 px-3 py-1 text-sm font-bold font-mono transition-colors ${
-                                                        force.yDirection === 'up'
-                                                            ? 'bg-gray-800 text-white' 
-                                                            : 'bg-white text-gray-800 hover:bg-gray-100'
-                                                    }`}
-                                                >
-                                                    ↑ Up
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => updateFromAcuteAngle(force.magnitude, force.acuteAngle, force.xDirection, 'down')}
-                                                    className={`flex-1 px-3 py-1 text-sm font-bold font-mono transition-colors ${
-                                                        force.yDirection === 'down'
-                                                            ? 'bg-gray-800 text-white' 
-                                                            : 'bg-white text-gray-800 hover:bg-gray-100'
-                                                    }`}
-                                                >
-                                                    ↓ Down
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-
-                            {getInputMethod() === 'components' && (
-                                // Component inputs
-                                <>
-                                    <SliderInput 
-                                        label="X-Component (Fx)" 
-                                        value={force.fx} 
-                                        min={-200} 
-                                        max={200} 
-                                        step={1} 
-                                        unit="N" 
-                                        onChange={(v) => updateFromComponents(v, force.fy)} 
-                                    />
-                                    <SliderInput 
-                                        label="Y-Component (Fy)" 
-                                        value={force.fy} 
-                                        min={-200} 
-                                        max={200} 
-                                        step={1} 
-                                        unit="N" 
-                                        onChange={(v) => updateFromComponents(force.fx, v)} 
-                                    />
-                                </>
-                            )}
-                        </div>
-                        
-                        {/* Show all representations for reference */}
-                        <div className="mt-3 pt-3 border-t border-gray-200">
-                            <h5 className="text-sm font-bold text-gray-700 mb-2 font-mono">Current Values:</h5>
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 text-xs font-mono">
-                                <div className="space-y-1">
-                                    <div className="text-gray-600">Magnitude: <span className="font-bold text-gray-900">{force.magnitude.toFixed(1)} N</span></div>
-                                    <div className="text-gray-600">Full Angle: <span className="font-bold text-gray-900">{force.angle.toFixed(1)}°</span></div>
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="text-gray-600">✅ Acute Angle: <span className="font-bold text-gray-900">{force.acuteAngle.toFixed(1)}°</span></div>
-                                    <div className="text-gray-600">✅ Direction: <span className="font-bold text-gray-900">{force.xDirection === 'right' ? '→ Right' : '← Left'}, {force.yDirection === 'up' ? '↑ Up' : '↓ Down'}</span></div>
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="text-gray-600">Fx: <span className="font-bold text-gray-900">{force.fx.toFixed(1)} N</span></div>
-                                    <div className="text-gray-600">Fy: <span className="font-bold text-gray-900">{force.fy.toFixed(1)} N</span></div>
-                                </div>
+                            <SliderInput 
+                                label="Magnitude" 
+                                value={force.magnitude} 
+                                min={0} 
+                                max={200} 
+                                step={1} 
+                                unit="N" 
+                                onChange={(v) => updateFromMagnitudeAngle(v, force.angle)} 
+                            />
+                            <SliderInput 
+                                label="Angle (0-360°)" 
+                                value={force.angle} 
+                                min={0} 
+                                max={360} 
+                                step={1} 
+                                unit="°" 
+                                onChange={(v) => updateFromMagnitudeAngle(force.magnitude, v)} 
+                            />
+                            <div className="text-xs text-gray-700 mt-2">
+                                <strong>Acute Angle:</strong> {force.acuteAngle.toFixed(1)}° (always shown for reference)<br/>
+                                <strong>Fx:</strong> Force × cos(angle). E.g., 60 × cos(45°) N. Right (+ve), Left (-ve).<br/>
+                                <strong>Fy:</strong> Force × sin(angle). E.g., 60 × sin(45°) N. Up (+ve), Down (-ve).
                             </div>
                         </div>
                     </div>
@@ -507,26 +337,6 @@ const CalculationBreakdown: React.FC<{
             </div>
 
             {/* Individual force breakdown for reference */}
-            <div className="mt-6">
-                <h4 className="text-lg font-bold text-gray-900 mb-3">Individual Force Contributions:</h4>
-                <div className="space-y-2">
-                    {enabledForces.map((force) => {
-                        const applicationPoint = points[force.id];
-                        const moment = calculateSingleForceMoment(force, distances, pivotPoint);
-                        
-                        return (
-                            <div key={force.id} className="bg-white p-3 rounded border border-gray-200">
-                                <div className="text-sm font-semibold text-gray-900">{force.name}:</div>
-                                <div className="text-xs text-gray-700">
-                                    Position: ({applicationPoint.x}, {applicationPoint.y}), 
-                                    Force: ({force.fx.toFixed(1)}, {force.fy.toFixed(1)}) N, 
-                                    Moment: {moment.toFixed(2)} Nm
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
         </div>
     );
 };
