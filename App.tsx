@@ -63,7 +63,7 @@ export default function App() {
         🔄 Reset All
       </button>
 
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-6 gap-1 lg:gap-2 px-1 lg:px-2 pb-1 min-h-0 w-full max-w-full overflow-hidden">
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-1 lg:gap-2 px-1 lg:px-2 pb-1 min-h-0 w-full max-w-full overflow-hidden">
         <div className="lg:col-span-3 bg-gray-50 p-2 rounded-lg shadow-sm border border-gray-300 flex items-center justify-center min-h-0 w-full max-w-full overflow-hidden">
           <Diagram {...appState} expandedForceId={expandedId} />
         </div>
@@ -76,14 +76,6 @@ export default function App() {
             onExpandedIdChange={setExpandedId}
             currentStep={currentStep}
             onStepChange={handleStepChange}
-          />
-        </div>
-        {/* Rotation Visualization Panel */}
-        <div className="lg:col-span-1 flex flex-col items-center justify-center bg-white border-l border-gray-300 p-4 min-h-0">
-          <RotationVisualization
-            forces={appState.forces}
-            distances={appState.distances}
-            pivotPoint={appState.pivotPoint}
           />
         </div>
       </main>

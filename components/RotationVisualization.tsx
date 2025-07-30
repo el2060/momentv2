@@ -35,13 +35,6 @@ const RotationVisualization: React.FC<RotationVisualizationProps> = ({ forces, d
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="mb-4 text-lg font-bold text-gray-700 font-mono">Rotation Visualization</div>
-      <div style={{ width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <RotationArrow
-          direction={isCCW ? 'ccw' : isCW ? 'cw' : 'ccw'}
-          angle={angle}
-          className="w-[90px] h-[90px]"
-        />
-      </div>
       <div className={`mt-4 text-xl font-bold font-mono ${isCCW ? 'text-green-600' : isCW ? 'text-red-600' : 'text-gray-500'}`}>
         {isCCW && '+ve (Counter-clockwise)'}
         {isCW && '-ve (Clockwise)'}

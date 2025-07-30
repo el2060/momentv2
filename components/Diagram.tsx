@@ -172,15 +172,21 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
           </g>
         ))}
 
-        {enabledForces.map(force => (
-            <ForceVector
-                key={force.id}
-                from={tPoints[force.id]}
-                fx={force.fx}
-                fy={force.fy}
-                scale={scale}
-            />
-        ))}
+        {enabledForces.map(force => {
+            const applicationPoint = tPoints[force.id];
+            const moment = pivotPoint ? calculateSingleForceMoment(force, distances, pivotPoint) : 0;
+            return (
+                <g key={force.id}>
+                    <ForceVector
+                        from={applicationPoint}
+                        fx={force.fx}
+                        fy={force.fy}
+                        scale={scale}
+                    />
+                    {/* Removed curved rotation arrows at pivot points */}
+                </g>
+            );
+        })}
         
         {expandedForceId && expandedForce?.isEnabled && pivotPoint && (
           <LeverArmVisual 
@@ -191,13 +197,7 @@ const Diagram: React.FC<DiagramProps> = ({ forces, distances, pivotPoint, expand
           />
         )}
 
-        {expandedForceId && singleMoment !== 0 && pivotPoint && (
-            <RotationIndicator center={tPoints[pivotPoint]} moment={singleMoment} />
-        )}
-        {/* Live rotation indicator for total moment */}
-        {pivotPoint && Math.abs(totalMoment) > 0.01 && (
-          <RotationIndicator center={tPoints[pivotPoint]} moment={totalMoment} />
-        )}
+        {/* Removed RotationIndicator for resultant direction at pivot point */}
 
         <g className="fill-gray-900 text-xs font-mono font-bold">
           {distances.d1 > 0 && <text x={(tPoints.A.x + tPoints.C.x) / 2} y={tPoints.A.y - 25}>d1 = {distances.d1}m</text>}

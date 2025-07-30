@@ -169,10 +169,23 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
                                 unit="°" 
                                 onChange={(v) => updateFromMagnitudeAngle(force.magnitude, v)} 
                             />
-                            <div className="text-xs text-gray-700 mt-2">
-                                <strong>Acute Angle:</strong> {force.acuteAngle.toFixed(1)}° (always shown for reference)<br/>
-                                <strong>Fx:</strong> Force × cos(angle). E.g., 60 × cos(45°) N. Right (+ve), Left (-ve).<br/>
-                                <strong>Fy:</strong> Force × sin(angle). E.g., 60 × sin(45°) N. Up (+ve), Down (-ve).
+                            <div className="text-xs text-gray-700 mt-2 flex items-center gap-4">
+                                {/* Replace text explanation with axis diagram */}
+                                <svg width="48" height="48" viewBox="0 0 48 48">
+                                    <line x1="24" y1="44" x2="24" y2="8" stroke="#222" strokeWidth="2" markerEnd="url(#arrow)" />
+                                    <line x1="24" y1="44" x2="44" y2="44" stroke="#222" strokeWidth="2" markerEnd="url(#arrow)" />
+                                    <text x="28" y="12" fontSize="12" fill="#222">y</text>
+                                    <text x="40" y="40" fontSize="12" fill="#222">x</text>
+                                    <defs>
+                                        <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+                                            <path d="M0,0 L6,3 L0,6 L2,3 Z" fill="#222" />
+                                        </marker>
+                                    </defs>
+                                </svg>
+                                <div>
+                                    <div><strong>Fx:</strong> 75 × cos(40°)</div>
+                                    <div><strong>Fy:</strong> -75 × sin(40°)</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -254,13 +267,12 @@ const CalculationBreakdown: React.FC<{
     const points = getApplicationPoints(distances);
     const pivotPoint_pos = points[pivotPoint];
 
+    // Present all calculation steps in one tab, with clear working and correct rotation symbol
     return (
         <div className="p-6 bg-white font-mono">
             <h3 className="text-xl font-bold text-gray-900 mb-4">
                 Calculation Breakdown - Moment about Point {pivotPoint}
             </h3>
-            
-            {/* Main equation with substituted values */}
             <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300 mb-4">
                 <div className="text-lg font-bold text-gray-900 mb-2">ΣM<sub>{pivotPoint}</sub> = </div>
                 <div className="text-base text-gray-800 leading-relaxed">
@@ -268,62 +280,35 @@ const CalculationBreakdown: React.FC<{
                         const applicationPoint = points[force.id];
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
-                        const moment = calculateSingleForceMoment(force, distances, pivotPoint);
-                        const sign = index === 0 ? '' : (moment >= 0 ? ' + ' : ' - ');
-                        
+                        // Show working in the format: ± F cosθ × rx ± F sinθ × ry
+                        const signFx = force.fx >= 0 ? '' : '-';
+                        const signFy = force.fy >= 0 ? '' : '-';
                         return (
-                            <span key={force.id}>
-                                {sign}({force.fx.toFixed(0)} × {ry.toFixed(1)} - {force.fy.toFixed(0)} × {rx.toFixed(1)})
-                            </span>
+                            <div key={force.id}>
+                                {`± ${Math.abs(force.magnitude).toFixed(0)} cos(${force.angle.toFixed(0)}°) × (${rx.toFixed(1)}) ${force.fy >= 0 ? '+' : '-'} ${Math.abs(force.magnitude).toFixed(0)} sin(${force.angle.toFixed(0)}°) × (${ry.toFixed(1)})`}
+                            </div>
                         );
                     })}
                 </div>
-            </div>
-
-            {/* Step-by-step arithmetic breakdown */}
-            <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300 mb-4">
-                <div className="text-base text-gray-800 leading-relaxed space-y-1">
-                    <div>= {enabledForces.map((force, index) => {
+                <div className="mt-2 text-base text-gray-800 leading-relaxed">
+                    {enabledForces.map((force, index) => {
                         const applicationPoint = points[force.id];
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
-                        const fxTimesRy = force.fx * ry;
-                        const fyTimesRx = force.fy * rx;
-                        const moment = fxTimesRy - fyTimesRx;
-                        const sign = index === 0 ? '' : (moment >= 0 ? ' + ' : ' - ');
-                        
+                        const fxTimesRx = force.fx * rx;
+                        const fyTimesRy = force.fy * ry;
                         return (
-                            <span key={force.id}>
-                                {sign}({fxTimesRy.toFixed(2)} - {fyTimesRx.toFixed(2)})
-                            </span>
+                            <div key={force.id}>
+                                {`= ${fxTimesRx.toFixed(2)} ${force.fy >= 0 ? '+' : '-'} ${fyTimesRy.toFixed(2)}`}
+                            </div>
                         );
-                    })}</div>
-                    
-                    <div>= {enabledForces.map((force, index) => {
-                        const moment = calculateSingleForceMoment(force, distances, pivotPoint);
-                        const sign = index === 0 ? '' : (moment >= 0 ? ' + ' : ' - ');
-                        const value = index === 0 ? moment.toFixed(2) : Math.abs(moment).toFixed(2);
-                        
-                        return (
-                            <span key={force.id}>
-                                {sign}{value}
-                            </span>
-                        );
-                    })}</div>
-                    
-                    <div>= {totalMoment.toFixed(2)} Nm</div>
+                    })}
                 </div>
-            </div>
-
-            {/* Final answer with direction indication */}
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border-2 border-green-300">
-                <div className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <span>= {Math.abs(totalMoment).toFixed(0)} Nm</span>
-                    {Math.abs(totalMoment) > 0.01 && (
-                        <span className="text-2xl">
-                            {totalMoment > 0 ? '↻' : '↺'}
-                        </span>
-                    )}
+                <div className="mt-2 text-base text-gray-800 leading-relaxed">
+                    {`= ${totalMoment.toFixed(2)} Nm`}
+                </div>
+                <div className="mt-2 text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <span>= {Math.abs(totalMoment).toFixed(2)} Nm</span>
                     <span className="text-green-800">(Answer)</span>
                 </div>
                 <div className="text-sm text-gray-700 mt-1">
@@ -335,8 +320,6 @@ const CalculationBreakdown: React.FC<{
                     }
                 </div>
             </div>
-
-            {/* Individual force breakdown for reference */}
         </div>
     );
 };
@@ -679,10 +662,20 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
 
   const steps = ["Frame Setup", "Define Forces", "Analyze Results"];
 
+  // Get current date and time for update info
+  const updatedAt = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
   return (
     <div className="bg-white border border-gray-300 p-3 rounded-lg shadow-sm h-full flex flex-col min-h-0">
-        <div className="pb-3 flex-shrink-0">
+        <div className="pb-3 flex-shrink-0 flex items-center justify-between">
             <Stepper steps={steps} currentStep={currentStep} />
+            <button
+                className="ml-2 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold border border-green-300 shadow-sm cursor-default"
+                title={`Last updated: ${updatedAt}`}
+                style={{ pointerEvents: 'none' }}
+            >
+                Updated: {updatedAt}
+            </button>
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-3 min-h-0 custom-scrollbar">
