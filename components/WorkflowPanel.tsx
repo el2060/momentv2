@@ -303,17 +303,21 @@ const CalculationBreakdown: React.FC<{
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
 
-                        // Calculate cos and sin components for display
-                        const cosComponent = force.magnitude * Math.cos(force.angle * Math.PI / 180);
-                        const sinComponent = force.magnitude * Math.sin(force.angle * Math.PI / 180);
+                        // Use absolute distances as shown in lecturer's example
+                        const distanceX = Math.abs(rx);
+                        const distanceY = Math.abs(ry);
 
-                        // Determine signs for display
+                        // Calculate the actual moment components for proper sign determination
+                        const momentFromCos = force.magnitude * Math.cos(force.angle * Math.PI / 180) * ry;
+                        const momentFromSin = force.magnitude * Math.sin(force.angle * Math.PI / 180) * rx;
+
+                        // Determine signs for display based on actual moment contributions
                         const signPrefix = index === 0 ? '' : '+ ';
-                        const sinSign = sinComponent >= 0 ? '+' : '-';
+                        const sinSign = momentFromSin >= 0 ? '+' : '-';
 
                         return (
                             <div key={force.id}>
-                                {signPrefix}{force.magnitude.toFixed(0)} cos({force.angle.toFixed(0)}°) × ({ry.toFixed(1)}) {sinSign} {force.magnitude.toFixed(0)} sin({force.angle.toFixed(0)}°) × ({rx.toFixed(1)})
+                                {signPrefix}{force.magnitude.toFixed(0)} cos({force.angle.toFixed(0)}°) × ({distanceY.toFixed(1)}) {sinSign} {force.magnitude.toFixed(0)} sin({force.angle.toFixed(0)}°) × ({distanceX.toFixed(1)})
                             </div>
                         );
                     })}
