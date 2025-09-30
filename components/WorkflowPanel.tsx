@@ -21,8 +21,12 @@ interface SliderInputProps {
 
 const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step, unit, onChange }) => {
   const id = React.useId();
-  const tickCount = Math.min(11, Math.floor((max - min) / step) + 1);
-  const ticks = Array.from({ length: tickCount }, (_, i) => min + (i * (max - min) / (tickCount - 1)));
+
+  // Special handling for angle sliders (0-360°)
+  const isAngleSlider = unit === '°' && max === 360;
+  const ticks = isAngleSlider
+    ? [0, 60, 120, 180, 240, 300, 360] // Show meaningful angle increments
+    : Array.from({ length: Math.min(6, Math.floor((max - min) / step) + 1) }, (_, i) => min + (i * (max - min) / (Math.min(6, Math.floor((max - min) / step) + 1) - 1)));
 
   return (
     <div className="space-y-3">
@@ -54,7 +58,7 @@ const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step,
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         />
         <div className="flex justify-between mt-2 px-1">
-          {ticks.slice(0, Math.min(6, ticks.length)).map((tick, i, arr) => (
+          {ticks.map((tick, i, arr) => (
             <span key={tick} className="text-xs text-gray-500" style={{
               marginLeft: i === 0 ? '0' : i === arr.length - 1 ? 'auto' : 'auto',
               marginRight: i === arr.length - 1 ? '0' : 'auto'
