@@ -93,7 +93,6 @@ export default function App() {
       />
 
       <footer className="text-center py-2 text-gray-400 text-xs border-t border-gray-200 bg-white w-full max-w-full">
-        <p>Built with React, TypeScript, and modern web technologies</p>
       </footer>
     </div>
   );
