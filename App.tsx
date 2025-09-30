@@ -38,36 +38,37 @@ export default function App() {
   }
   
   return (
-    <div className="h-screen w-screen max-w-full bg-white text-gray-900 font-mono overflow-hidden flex flex-col">
+    <div className="h-screen w-screen max-w-full bg-gray-50 text-gray-900 overflow-hidden flex flex-col">
       <Header />
 
-      {/* Floating Learning Activities Button */}
-      <button
-        onClick={() => setIsLearningModalOpen(true)}
-        className="fixed top-6 right-6 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-full shadow-lg z-40 font-bold text-sm transition-all hover:scale-105"
-        title="Open Learning Activities"
-      >
-        🎯 Learning Activities
-      </button>
+      {/* Floating Action Buttons */}
+      <div className="fixed top-32 right-4 flex flex-col gap-2 z-40">
+        <button
+          onClick={() => setIsLearningModalOpen(true)}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl shadow-lg font-semibold text-sm transition-all duration-200 hover:shadow-xl flex items-center gap-2"
+          title="Open Learning Activities"
+        >
+          🎯 <span>Activities</span>
+        </button>
 
-      {/* Reset Button */}
-      <button
-        onClick={() => {
-          setAppState(INITIAL_STATE);
-          setCurrentStep(1);
-          setExpandedId(null);
-        }}
-        className="fixed top-6 left-6 bg-gray-600 hover:bg-gray-800 text-white px-4 py-3 rounded-full shadow-lg z-40 font-bold text-sm transition-all hover:scale-105"
-        title="Reset All"
-      >
-        🔄 Reset All
-      </button>
+        <button
+          onClick={() => {
+            setAppState(INITIAL_STATE);
+            setCurrentStep(1);
+            setExpandedId(null);
+          }}
+          className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-xl shadow-lg font-semibold text-sm transition-all duration-200 hover:shadow-xl flex items-center gap-2"
+          title="Reset All"
+        >
+          🔄 <span>Reset</span>
+        </button>
+      </div>
 
-      <main className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-1 lg:gap-2 px-1 lg:px-2 pb-1 min-h-0 w-full max-w-full overflow-hidden">
-        <div className="lg:col-span-3 bg-gray-50 p-2 rounded-lg shadow-sm border border-gray-300 flex items-center justify-center min-h-0 w-full max-w-full overflow-hidden">
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-4 px-3 lg:px-4 pb-3 min-h-0 w-full max-w-full overflow-hidden">
+        <div className="lg:col-span-3 bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-center min-h-0 w-full max-w-full overflow-hidden">
           <Diagram {...appState} expandedForceId={expandedId} />
         </div>
-        <div className="lg:col-span-2 flex flex-col gap-1 min-h-0 overflow-hidden w-full max-w-full">
+        <div className="lg:col-span-2 flex flex-col gap-2 min-h-0 overflow-hidden w-full max-w-full">
           <WorkflowPanel
             appState={appState}
             onStateChange={handleStateChange}
@@ -91,7 +92,7 @@ export default function App() {
         onForceChange={handleForceChange}
       />
 
-      <footer className="text-center py-0.5 text-gray-500 text-xs border-t border-gray-200 bg-gray-50 font-mono w-full max-w-full">
+      <footer className="text-center py-2 text-gray-400 text-xs border-t border-gray-200 bg-white w-full max-w-full">
         <p>Built with React, TypeScript, and modern web technologies</p>
       </footer>
     </div>

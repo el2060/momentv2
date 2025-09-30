@@ -154,7 +154,39 @@ const LearningActivitiesModal: React.FC<LearningActivitiesModalProps> = ({
           {/* Instructions Panel */}
           <div className="w-1/3 bg-gray-100 p-4 rounded-lg">
             <h3 className="text-lg font-semibold">Instructions</h3>
-            <p>{questions[currentQuestion]?.instruction}</p>
+            <p className="mb-4">{questions[currentQuestion]?.instruction}</p>
+
+            {/* Reference Diagram */}
+            <div className="bg-white p-3 rounded-lg border">
+              <h4 className="text-sm font-semibold mb-2 text-gray-700">Reference Frame</h4>
+              <svg width="120" height="100" viewBox="0 0 120 100" className="border border-gray-300 rounded">
+                {/* Frame Structure */}
+                <line x1="20" y1="70" x2="100" y2="70" stroke="#374151" strokeWidth="2"/>
+                <line x1="20" y1="70" x2="20" y2="20" stroke="#374151" strokeWidth="2"/>
+
+                {/* Points */}
+                <circle cx="20" cy="20" r="4" fill="#dc2626" stroke="#fff" strokeWidth="2"/>
+                <circle cx="20" cy="70" r="4" fill="#dc2626" stroke="#fff" strokeWidth="2"/>
+                <circle cx="70" cy="20" r="4" fill="#dc2626" stroke="#fff" strokeWidth="2"/>
+                <circle cx="100" cy="70" r="4" fill="#dc2626" stroke="#fff" strokeWidth="2"/>
+
+                {/* Labels */}
+                <text x="15" y="15" fontSize="12" fill="#374151" fontWeight="bold">A</text>
+                <text x="15" y="85" fontSize="12" fill="#374151" fontWeight="bold">B</text>
+                <text x="75" y="15" fontSize="12" fill="#374151" fontWeight="bold">C</text>
+                <text x="105" y="85" fontSize="12" fill="#374151" fontWeight="bold">D</text>
+
+                {/* Distance Labels */}
+                <text x="42" y="15" fontSize="10" fill="#6b7280">d₁</text>
+                <text x="10" y="50" fontSize="10" fill="#6b7280">d₂</text>
+                <text x="55" y="85" fontSize="10" fill="#6b7280">d₃</text>
+
+                {/* Distance Lines */}
+                <line x1="20" y1="25" x2="70" y2="25" stroke="#6b7280" strokeWidth="1" strokeDasharray="2,2"/>
+                <line x1="15" y1="20" x2="15" y2="70" stroke="#6b7280" strokeWidth="1" strokeDasharray="2,2"/>
+                <line x1="20" y1="75" x2="100" y2="75" stroke="#6b7280" strokeWidth="1" strokeDasharray="2,2"/>
+              </svg>
+            </div>
           </div>
 
           {/* Canvas Interaction Panel */}

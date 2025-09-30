@@ -7,27 +7,33 @@ interface StepperProps {
 
 const Stepper: React.FC<StepperProps> = ({ steps, currentStep }) => {
   return (
-    <nav aria-label="Progress">
-      <ol role="list" className="space-y-2 md:flex md:space-x-4 md:space-y-0">
+    <nav aria-label="Progress" className="mb-6">
+      <ol role="list" className="flex space-x-1">
         {steps.map((step, stepIdx) => {
           const stepNumber = stepIdx + 1;
           const status = currentStep > stepNumber ? 'complete' : currentStep === stepNumber ? 'current' : 'upcoming';
 
           return (
-            <li key={step} className="md:flex-1">
-              <div className={`group flex flex-col border-l-4 py-2 pl-3 transition-colors md:border-l-0 md:border-t-4 md:pl-0 md:pt-2 md:pb-0 ${
-                  status === 'complete' ? 'border-gray-800' :
-                  status === 'current' ? 'border-gray-900' :
-                  'border-gray-400 hover:border-gray-600'
+            <li key={step} className="flex-1">
+              <div className={`relative flex flex-col items-center p-3 rounded-xl transition-all duration-200 ${
+                  status === 'complete' ? 'bg-emerald-50 border border-emerald-200' :
+                  status === 'current' ? 'bg-blue-50 border border-blue-200 shadow-sm' :
+                  'bg-gray-50 border border-gray-200'
               }`}>
-                <span className={`text-xs font-bold transition-colors font-mono ${
-                  status === 'complete' ? 'text-gray-800' :
-                  status === 'current' ? 'text-gray-900' :
-                  'text-gray-600 group-hover:text-gray-700'
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm mb-2 ${
+                  status === 'complete' ? 'bg-emerald-100 text-emerald-700' :
+                  status === 'current' ? 'bg-blue-100 text-blue-700' :
+                  'bg-gray-100 text-gray-500'
                 }`}>
-                  Step {stepNumber}
+                  {status === 'complete' ? '✓' : stepNumber}
+                </div>
+                <span className={`text-xs font-medium text-center leading-tight ${
+                  status === 'complete' ? 'text-emerald-700' :
+                  status === 'current' ? 'text-blue-700' :
+                  'text-gray-500'
+                }`}>
+                  {step}
                 </span>
-                <span className="text-sm font-bold text-gray-900 font-mono">{step}</span>
               </div>
             </li>
           );

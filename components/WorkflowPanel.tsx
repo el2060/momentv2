@@ -23,11 +23,11 @@ const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step,
   const id = React.useId();
   const tickCount = Math.min(11, Math.floor((max - min) / step) + 1);
   const ticks = Array.from({ length: tickCount }, (_, i) => min + (i * (max - min) / (tickCount - 1)));
-  
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <label htmlFor={id} className="text-lg font-bold text-gray-900 font-mono">{label}</label>
+        <label htmlFor={id} className="text-sm font-semibold text-gray-700">{label}</label>
         <div className="flex items-center gap-2">
             <input
                 id={id}
@@ -37,9 +37,9 @@ const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step,
                 max={max}
                 step={step}
                 onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-                className="w-18 bg-white border-2 border-gray-400 rounded-lg px-2 py-1 text-right text-gray-900 font-mono text-xs font-bold focus:ring-2 focus:ring-gray-600 focus:border-gray-600 focus:outline-none transition-colors"
+                className="w-16 bg-white border border-gray-300 rounded-lg px-2 py-1 text-right text-gray-900 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
             />
-            <span className="text-lg text-gray-700 font-mono font-bold min-w-[1rem]">{unit}</span>
+            <span className="text-sm text-gray-600 font-medium min-w-[1rem]">{unit}</span>
         </div>
       </div>
       <div className="relative">
@@ -51,11 +51,11 @@ const SliderInput: React.FC<SliderInputProps> = ({ label, value, min, max, step,
           step={step}
           value={value}
           onChange={(e) => onChange(parseFloat(e.target.value))}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-enhanced"
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
         />
-        <div className="flex justify-between mt-1 px-1">
+        <div className="flex justify-between mt-2 px-1">
           {ticks.slice(0, Math.min(6, ticks.length)).map((tick, i, arr) => (
-            <span key={tick} className="text-base text-gray-500 font-mono" style={{
+            <span key={tick} className="text-xs text-gray-500" style={{
               marginLeft: i === 0 ? '0' : i === arr.length - 1 ? 'auto' : 'auto',
               marginRight: i === arr.length - 1 ? '0' : 'auto'
             }}>
@@ -160,31 +160,49 @@ const ForceControlCard: React.FC<ForceControlCardProps> = ({ force, onChange }) 
                                 unit="N" 
                                 onChange={(v) => updateFromMagnitudeAngle(v, force.angle)} 
                             />
-                            <SliderInput 
-                                label="Angle (0-360°)" 
-                                value={force.angle} 
-                                min={0} 
-                                max={360} 
-                                step={1} 
-                                unit="°" 
-                                onChange={(v) => updateFromMagnitudeAngle(force.magnitude, v)} 
+                            <SliderInput
+                                label="Angle (0-360°)"
+                                value={force.angle}
+                                min={0}
+                                max={360}
+                                step={1}
+                                unit="°"
+                                onChange={(v) => updateFromMagnitudeAngle(force.magnitude, v)}
                             />
+
+                            {/* Acute Angle Display */}
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-gray-700">Acute Angle Equivalent:</span>
+                                    <span className="font-bold text-blue-700">{(() => {
+                                        const angle = force.angle;
+                                        if (angle >= 0 && angle <= 90) return `${angle.toFixed(0)}° (as is)`;
+                                        if (angle > 90 && angle <= 180) return `${(180 - angle).toFixed(0)}° (180° - angle)`;
+                                        if (angle > 180 && angle <= 270) return `${(angle - 180).toFixed(0)}° (angle - 180°)`;
+                                        return `${(360 - angle).toFixed(0)}° (360° - angle)`;
+                                    })()}</span>
+                                </div>
+                                <div className="text-xs text-gray-600">
+                                    This shows how the current angle relates to acute angle calculations for easier reference.
+                                </div>
+                            </div>
+
                             <div className="text-xs text-gray-700 mt-2 flex items-center gap-4">
-                                {/* Replace text explanation with axis diagram */}
+                                {/* Axis diagram with force components */}
                                 <svg width="48" height="48" viewBox="0 0 48 48">
-                                    <line x1="24" y1="44" x2="24" y2="8" stroke="#222" strokeWidth="2" markerEnd="url(#arrow)" />
-                                    <line x1="24" y1="44" x2="44" y2="44" stroke="#222" strokeWidth="2" markerEnd="url(#arrow)" />
-                                    <text x="28" y="12" fontSize="12" fill="#222">y</text>
-                                    <text x="40" y="40" fontSize="12" fill="#222">x</text>
+                                    <line x1="24" y1="44" x2="24" y2="8" stroke="#374151" strokeWidth="2" markerEnd="url(#arrow)" />
+                                    <line x1="24" y1="44" x2="44" y2="44" stroke="#374151" strokeWidth="2" markerEnd="url(#arrow)" />
+                                    <text x="28" y="12" fontSize="12" fill="#374151">y</text>
+                                    <text x="40" y="40" fontSize="12" fill="#374151">x</text>
                                     <defs>
                                         <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
-                                            <path d="M0,0 L6,3 L0,6 L2,3 Z" fill="#222" />
+                                            <path d="M0,0 L6,3 L0,6 L2,3 Z" fill="#374151" />
                                         </marker>
                                     </defs>
                                 </svg>
-                                <div>
-                                    <div><strong>Fx:</strong> 75 × cos(40°)</div>
-                                    <div><strong>Fy:</strong> -75 × sin(40°)</div>
+                                <div className="font-mono text-xs">
+                                    <div><strong>Fx:</strong> {force.magnitude.toFixed(1)} × cos({force.angle.toFixed(0)}°) = <strong>{force.fx.toFixed(1)}</strong></div>
+                                    <div><strong>Fy:</strong> {force.magnitude.toFixed(1)} × sin({force.angle.toFixed(0)}°) = <strong>{force.fy.toFixed(1)}</strong></div>
                                 </div>
                             </div>
                         </div>
@@ -280,42 +298,37 @@ const CalculationBreakdown: React.FC<{
                         const applicationPoint = points[force.id];
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
-                        // Show working in the format: ± F cosθ × rx ± F sinθ × ry
-                        const signFx = force.fx >= 0 ? '' : '-';
-                        const signFy = force.fy >= 0 ? '' : '-';
+                        const momentContrib = calculateSingleForceMoment(force, distances, pivotPoint);
+                        const signStr = index === 0 ? '' : (momentContrib >= 0 ? ' + ' : ' - ');
+                        const absContrib = Math.abs(momentContrib);
+
                         return (
-                            <div key={force.id}>
-                                {`± ${Math.abs(force.magnitude).toFixed(0)} cos(${force.angle.toFixed(0)}°) × (${rx.toFixed(1)}) ${force.fy >= 0 ? '+' : '-'} ${Math.abs(force.magnitude).toFixed(0)} sin(${force.angle.toFixed(0)}°) × (${ry.toFixed(1)})`}
-                            </div>
+                            <span key={force.id}>
+                                {signStr}{Math.abs(force.magnitude).toFixed(0)} cos({force.angle.toFixed(0)}°) × ({Math.abs(ry).toFixed(1)}) {momentContrib >= 0 ? '+' : '-'} {Math.abs(force.magnitude).toFixed(0)} sin({force.angle.toFixed(0)}°) × ({Math.abs(rx).toFixed(1)})
+                                {index < enabledForces.length - 1 ? ' + ' : ''}
+                            </span>
                         );
                     })}
                 </div>
-                <div className="mt-2 text-base text-gray-800 leading-relaxed">
-                    {enabledForces.map((force, index) => {
+                <div className="mt-3 text-base text-gray-800 leading-relaxed">
+                    = {enabledForces.map((force, index) => {
                         const applicationPoint = points[force.id];
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
-                        const fxTimesRx = force.fx * rx;
-                        const fyTimesRy = force.fy * ry;
-                        return (
-                            <div key={force.id}>
-                                {`= ${fxTimesRx.toFixed(2)} ${force.fy >= 0 ? '+' : '-'} ${fyTimesRy.toFixed(2)}`}
-                            </div>
-                        );
-                    })}
+                        const momentContrib = calculateSingleForceMoment(force, distances, pivotPoint);
+                        const signStr = index === 0 ? '' : (momentContrib >= 0 ? ' + ' : ' - ');
+
+                        return `${signStr}${Math.abs(momentContrib).toFixed(2)}`;
+                    }).join('')}
                 </div>
-                <div className="mt-2 text-base text-gray-800 leading-relaxed">
-                    {`= ${totalMoment.toFixed(2)} Nm`}
-                </div>
-                <div className="mt-2 text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <span>= {Math.abs(totalMoment).toFixed(2)} Nm</span>
-                    <span className="text-green-800">(Answer)</span>
+                <div className="mt-2 text-lg font-bold text-gray-900">
+                    = {totalMoment.toFixed(2)} Nm (Answer)
                 </div>
                 <div className="text-sm text-gray-700 mt-1">
-                    {Math.abs(totalMoment) < 0.01 
-                        ? 'System is in equilibrium' 
-                        : totalMoment > 0 
-                        ? 'Counter-clockwise rotation' 
+                    {Math.abs(totalMoment) < 0.01
+                        ? 'System is in equilibrium'
+                        : totalMoment > 0
+                        ? 'Counter-clockwise rotation'
                         : 'Clockwise rotation'
                     }
                 </div>
@@ -666,29 +679,22 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
   const updatedAt = new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div className="bg-white border border-gray-300 p-3 rounded-lg shadow-sm h-full flex flex-col min-h-0">
-        <div className="pb-3 flex-shrink-0 flex items-center justify-between">
+    <div className="bg-white border border-gray-200 p-4 rounded-2xl shadow-sm h-full flex flex-col min-h-0">
+        <div className="pb-4 flex-shrink-0">
             <Stepper steps={steps} currentStep={currentStep} />
-            <button
-                className="ml-2 px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-bold border border-green-300 shadow-sm cursor-default"
-                title={`Last updated: ${updatedAt}`}
-                style={{ pointerEvents: 'none' }}
-            >
-                Updated: {updatedAt}
-            </button>
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-3 min-h-0 custom-scrollbar">
         {/* --- STEP 1: FRAME SETUP --- */}
         {currentStep === 1 && (
-            <section className="space-y-3 animate-fade-in">
-                <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 font-mono">1. Select Pivot Point (A, B, C, or D)</h3>
-                    <p className="text-base text-gray-700 mb-2 font-mono">Choose which point will be the center of rotation:</p>
+            <section className="space-y-4 animate-fade-in">
+                <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">1. Select Pivot Point</h3>
+                    <p className="text-sm text-gray-600 mb-4">Choose which point will be the center of rotation:</p>
                     {!pivotPoint && (
-                        <div className="bg-gray-50 border border-gray-300 rounded-lg p-2 mb-2 border-l-4 border-l-gray-600">
-                            <p className="text-sm text-gray-700 font-medium flex items-center gap-2 font-mono">
-                                <span className="text-gray-600">ℹ️</span>
+                        <div className="bg-blue-100 border border-blue-200 rounded-lg p-3 mb-4">
+                            <p className="text-sm text-blue-800 font-medium flex items-center gap-2">
+                                <span>ℹ️</span>
                                 Please select a pivot point to continue
                             </p>
                         </div>
@@ -698,8 +704,10 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
                             <button
                             key={id}
                             onClick={() => onStateChange('pivotPoint', id as PivotPointId)}
-                            className={`py-2 px-3 rounded-lg font-bold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 text-lg border-2 font-mono ${
-                                pivotPoint === id ? 'bg-gray-800 text-white border-gray-800 shadow-lg' : 'bg-white hover:bg-gray-100 text-gray-900 border-gray-300 hover:border-gray-400'
+                            className={`py-3 px-4 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-sm border ${
+                                pivotPoint === id
+                                    ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                                    : 'bg-white hover:bg-blue-50 text-gray-700 border-gray-300 hover:border-blue-300'
                             }`}
                             >
                             Point {id} {pivotPoint === id ? '✓' : ''}
@@ -707,32 +715,32 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
                         ))}
                     </div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300 space-y-3">
-                    <h3 className="text-xl font-bold text-gray-900 font-mono">2. Adjust Frame Distances (in meters)</h3>
-                    <p className="text-base text-gray-700 mb-2 font-mono">Set the distances between points on the structural frame:</p>
-                    <SliderInput label="Distance d1 (A to C)" value={distances.d1} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d1: v})} />
-                    <SliderInput label="Distance d2 (A to B)" value={distances.d2} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d2: v})} />
-                    <SliderInput label="Distance d3 (B to D)" value={distances.d3} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d3: v})} />
+                <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900">2. Adjust Frame Distances</h3>
+                    <p className="text-sm text-gray-600 mb-4">Set the distances between points on the structural frame:</p>
+                    <SliderInput label="Distance d₁ (A to C)" value={distances.d1} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d1: v})} />
+                    <SliderInput label="Distance d₂ (A to B)" value={distances.d2} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d2: v})} />
+                    <SliderInput label="Distance d₃ (B to D)" value={distances.d3} min={0} max={10} step={0.1} unit="m" onChange={(v) => onStateChange('distances', {...distances, d3: v})} />
                 </div>
-                <div className="flex justify-between items-center pt-3 mt-3 border-t border-gray-200">
+                <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
                     {pivotPoint && (
-                        <button 
+                        <button
                             onClick={() => onStateChange('pivotPoint', null)}
-                            className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-600 flex items-center gap-2 text-xs font-mono"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-3 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 flex items-center gap-2 text-sm"
                         >
                             ↻ Reset Selection
                         </button>
                     )}
-                    <button 
-                        onClick={() => onStepChange(2)} 
+                    <button
+                        onClick={() => onStepChange(2)}
                         disabled={!pivotPoint}
-                        className={`font-bold py-2 px-3 rounded-lg transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center gap-2 text-sm button-hover-lift font-mono ${
-                            pivotPoint 
-                                ? 'bg-gray-800 hover:bg-gray-900 text-white hover:shadow-xl focus:ring-gray-600' 
+                        className={`font-semibold py-2 px-4 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center gap-2 text-sm ${
+                            pivotPoint
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md focus:ring-blue-500'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         } ${!pivotPoint ? '' : 'ml-auto'}`}
                     >
-                        Next: Define Forces &rarr;
+                        Next: Define Forces →
                     </button>
                 </div>
             </section>
