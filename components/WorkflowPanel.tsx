@@ -296,39 +296,42 @@ const CalculationBreakdown: React.FC<{
                 Calculation Breakdown - Moment about Point {pivotPoint}
             </h3>
             <div className="bg-gray-50 p-4 rounded-lg border-2 border-gray-300 mb-4">
-                <div className="text-lg font-bold text-gray-900 mb-2">ΣM<sub>{pivotPoint}</sub> = </div>
-                <div className="text-base text-gray-800 leading-relaxed">
+                <div className="text-lg font-bold text-gray-900 mb-3">ΣM<sub>{pivotPoint}</sub> = </div>
+                <div className="text-base text-gray-800 leading-relaxed space-y-1">
                     {enabledForces.map((force, index) => {
                         const applicationPoint = points[force.id];
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
-                        const momentContrib = calculateSingleForceMoment(force, distances, pivotPoint);
-                        const signStr = index === 0 ? '' : (momentContrib >= 0 ? ' + ' : ' - ');
-                        const absContrib = Math.abs(momentContrib);
+
+                        // Calculate cos and sin components for display
+                        const cosComponent = force.magnitude * Math.cos(force.angle * Math.PI / 180);
+                        const sinComponent = force.magnitude * Math.sin(force.angle * Math.PI / 180);
+
+                        // Determine signs for display
+                        const signPrefix = index === 0 ? '' : '+ ';
+                        const sinSign = sinComponent >= 0 ? '+' : '-';
 
                         return (
-                            <span key={force.id}>
-                                {signStr}{Math.abs(force.magnitude).toFixed(0)} cos({force.angle.toFixed(0)}°) × ({Math.abs(ry).toFixed(1)}) {momentContrib >= 0 ? '+' : '-'} {Math.abs(force.magnitude).toFixed(0)} sin({force.angle.toFixed(0)}°) × ({Math.abs(rx).toFixed(1)})
-                                {index < enabledForces.length - 1 ? ' + ' : ''}
-                            </span>
+                            <div key={force.id}>
+                                {signPrefix}{force.magnitude.toFixed(0)} cos({force.angle.toFixed(0)}°) × ({ry.toFixed(1)}) {sinSign} {force.magnitude.toFixed(0)} sin({force.angle.toFixed(0)}°) × ({rx.toFixed(1)})
+                            </div>
                         );
                     })}
                 </div>
+
                 <div className="mt-3 text-base text-gray-800 leading-relaxed">
                     = {enabledForces.map((force, index) => {
-                        const applicationPoint = points[force.id];
-                        const rx = applicationPoint.x - pivotPoint_pos.x;
-                        const ry = applicationPoint.y - pivotPoint_pos.y;
                         const momentContrib = calculateSingleForceMoment(force, distances, pivotPoint);
-                        const signStr = index === 0 ? '' : (momentContrib >= 0 ? ' + ' : ' - ');
-
-                        return `${signStr}${Math.abs(momentContrib).toFixed(2)}`;
+                        const signStr = index === 0 ? '' : (momentContrib >= 0 ? ' + ' : ' ');
+                        return `${signStr}${momentContrib.toFixed(2)}`;
                     }).join('')}
                 </div>
+
                 <div className="mt-2 text-lg font-bold text-gray-900">
                     = {totalMoment.toFixed(2)} Nm (Answer)
                 </div>
-                <div className="text-sm text-gray-700 mt-1">
+
+                <div className="text-sm text-gray-700 mt-2">
                     {Math.abs(totalMoment) < 0.01
                         ? 'System is in equilibrium'
                         : totalMoment > 0
