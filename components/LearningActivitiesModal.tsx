@@ -95,7 +95,7 @@ const LearningActivitiesModal: React.FC<LearningActivitiesModalProps> = ({
             title: "Sign Convention Clarification",
             question: "Try with pivot point C, a force pointing up at A, predict if the moment is indicated as negative sign, and why.",
             instruction: "Set pivot to C, place an upward force at A, and observe the rotation direction.",
-            correctAnswer: "Positive (Counter-clockwise)",
+            correctAnswer: "Negative (Clockwise)",
             answerExplanation: "The moment is indicated with positive sign as the force is causing the object to rotate anti-clockwise. The positive/negative sign of a moment is purely decided by the direction of rotation caused by the force on the object. This is different from the sign convention in Chapter 3 Resultant Forces, where force pointing up is indicated as positive, force pointing down is indicated as negative.",
             type: "multiple-choice",
             options: ["Positive (Counter-clockwise)", "Negative (Clockwise)", "Zero", "Cannot determine"]

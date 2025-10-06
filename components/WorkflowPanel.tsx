@@ -307,17 +307,20 @@ const CalculationBreakdown: React.FC<{
                         const distanceX = Math.abs(rx);
                         const distanceY = Math.abs(ry);
 
-                        // Calculate the actual moment components for proper sign determination
-                        const momentFromCos = force.magnitude * Math.cos(force.angle * Math.PI / 180) * ry;
-                        const momentFromSin = force.magnitude * Math.sin(force.angle * Math.PI / 180) * rx;
+                        // Calculate the actual moment components using the correct formula: M = rx*Fy - ry*Fx
+                        // Where Fx = F*cos(θ) and Fy = F*sin(θ)
+                        const Fx = force.magnitude * Math.cos(force.angle * Math.PI / 180);
+                        const Fy = force.magnitude * Math.sin(force.angle * Math.PI / 180);
+                        const momentFromSin = rx * Fy;  // rx * Fy term
+                        const momentFromCos = ry * Fx;  // ry * Fx term
 
                         // Determine signs for display based on actual moment contributions
                         const signPrefix = index === 0 ? '' : '+ ';
-                        const sinSign = momentFromSin >= 0 ? '+' : '-';
+                        const cosSign = momentFromCos >= 0 ? '-' : '+';  // Note: this term is subtracted in cross product
 
                         return (
                             <div key={force.id}>
-                                {signPrefix}{force.magnitude.toFixed(0)} cos({force.angle.toFixed(0)}°) × ({distanceY.toFixed(1)}) {sinSign} {force.magnitude.toFixed(0)} sin({force.angle.toFixed(0)}°) × ({distanceX.toFixed(1)})
+                                {signPrefix}{force.magnitude.toFixed(0)} sin({force.angle.toFixed(0)}°) × ({distanceX.toFixed(1)}) {cosSign} {force.magnitude.toFixed(0)} cos({force.angle.toFixed(0)}°) × ({distanceY.toFixed(1)})
                             </div>
                         );
                     })}
