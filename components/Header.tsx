@@ -121,9 +121,6 @@ const Header: React.FC = () => {
                         <h1 className="text-base lg:text-lg font-bold text-gray-900 tracking-tight truncate">
                             Moment of a Force Interactive Simulator
                         </h1>
-                        <p className="text-xs lg:text-sm text-gray-600 mt-1 truncate">
-                            Master the principles of mechanics through interactive learning
-                        </p>
                     </div>
 
                     {/* Updated Button */}
