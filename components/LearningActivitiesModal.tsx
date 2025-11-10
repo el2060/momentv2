@@ -233,13 +233,14 @@ const LearningActivitiesModal: React.FC<LearningActivitiesModalProps> = ({
           >
             Previous
           </button>
-          <button
-            onClick={() => handleQuestionNavigation('next')}
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-            disabled={currentQuestion === questions.length - 1}
-          >
-            Next
-          </button>
+          {currentQuestion < questions.length - 1 && (
+            <button
+              onClick={() => handleQuestionNavigation('next')}
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+            >
+              Next
+            </button>
+          )}
         </footer>
       </div>
     </div>
