@@ -130,12 +130,12 @@ const Header: React.FC = () => {
                     <div className="flex items-center flex-shrink-0">
                         <button
                             className="bg-gray-100 hover:bg-gray-200 border border-gray-300 text-gray-700 px-2 lg:px-3 py-1 lg:py-2 rounded-xl font-medium text-xs lg:text-sm transition-all duration-200 hover:border-gray-400 flex items-center gap-1 lg:gap-2 shadow-sm"
-                            title="Last updated on October 6, 2025"
+                            title="Last updated on November 10, 2025"
                             disabled
                         >
                             <span className="text-gray-500 text-xs lg:text-sm">📅</span>
-                            <span className="hidden sm:inline">Updated: 06 Oct 2025</span>
-                            <span className="sm:hidden">06 Oct 2025</span>
+                            <span className="hidden sm:inline">Updated: 10 Nov 2025</span>
+                            <span className="sm:hidden">10 Nov 2025</span>
                         </button>
                     </div>
                 </div>

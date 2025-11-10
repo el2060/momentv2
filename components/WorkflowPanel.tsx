@@ -303,24 +303,36 @@ const CalculationBreakdown: React.FC<{
                         const rx = applicationPoint.x - pivotPoint_pos.x;
                         const ry = applicationPoint.y - pivotPoint_pos.y;
 
+                        // Calculate the actual moment components using the correct formula: M = rx*Fy - ry*Fx
+                        const Fx = force.magnitude * Math.cos(force.angle * Math.PI / 180);
+                        const Fy = force.magnitude * Math.sin(force.angle * Math.PI / 180);
+                        const momentFromSin = rx * Fy;  // rx * Fy term (perpendicular distance in x-direction)
+                        const momentFromCos = ry * Fx;  // ry * Fx term (perpendicular distance in y-direction)
+
+                        // Convert angle to acute angle (0-90°) for display
+                        const getAcuteAngle = (angle: number) => {
+                            const normalized = angle % 360;
+                            if (normalized >= 0 && normalized <= 90) return normalized;
+                            if (normalized > 90 && normalized <= 180) return 180 - normalized;
+                            if (normalized > 180 && normalized <= 270) return normalized - 180;
+                            return 360 - normalized; // 270-360
+                        };
+                        
+                        const acuteAngle = getAcuteAngle(force.angle);
+
                         // Use absolute distances as shown in lecturer's example
                         const distanceX = Math.abs(rx);
                         const distanceY = Math.abs(ry);
 
-                        // Calculate the actual moment components using the correct formula: M = rx*Fy - ry*Fx
-                        // Where Fx = F*cos(θ) and Fy = F*sin(θ)
-                        const Fx = force.magnitude * Math.cos(force.angle * Math.PI / 180);
-                        const Fy = force.magnitude * Math.sin(force.angle * Math.PI / 180);
-                        const momentFromSin = rx * Fy;  // rx * Fy term
-                        const momentFromCos = ry * Fx;  // ry * Fx term
-
-                        // Determine signs for display based on actual moment contributions
-                        const signPrefix = index === 0 ? '' : '+ ';
-                        const cosSign = momentFromCos >= 0 ? '-' : '+';  // Note: this term is subtracted in cross product
+                        // Determine signs for each term based on their contribution to rotation
+                        // The sign shows whether this component contributes + (counter-clockwise) or - (clockwise)
+                        const linePrefix = index === 0 ? '' : '+ ';
+                        const sinTermSign = momentFromSin >= 0 ? '+' : '-';
+                        const cosTermSign = momentFromCos >= 0 ? '-' : '+';  // This term is subtracted in cross product
 
                         return (
                             <div key={force.id}>
-                                {signPrefix}{force.magnitude.toFixed(0)} sin({force.angle.toFixed(0)}°) × ({distanceX.toFixed(1)}) {cosSign} {force.magnitude.toFixed(0)} cos({force.angle.toFixed(0)}°) × ({distanceY.toFixed(1)})
+                                {linePrefix}{force.magnitude.toFixed(0)} sin({acuteAngle.toFixed(0)}°) × ({distanceX.toFixed(1)}) {cosTermSign} {force.magnitude.toFixed(0)} cos({acuteAngle.toFixed(0)}°) × ({distanceY.toFixed(1)})
                             </div>
                         );
                     })}
