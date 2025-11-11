@@ -324,9 +324,18 @@ const CalculationBreakdown: React.FC<{
                         const distanceX = Math.abs(rx);
                         const distanceY = Math.abs(ry);
 
+                        // Calculate total moment contribution from this force
+                        const totalMomentContribution = momentFromSin - momentFromCos;
+
                         // Determine signs for each term based on their contribution to rotation
-                        // The sign shows whether this component contributes + (counter-clockwise) or - (clockwise)
-                        const linePrefix = index === 0 ? '' : '+ ';
+                        // The line prefix shows whether the entire force contributes + (counter-clockwise) or - (clockwise)
+                        let linePrefix = '';
+                        if (index === 0) {
+                            linePrefix = totalMomentContribution >= 0 ? '' : '- ';
+                        } else {
+                            linePrefix = totalMomentContribution >= 0 ? '+ ' : '- ';
+                        }
+                        
                         const sinTermSign = momentFromSin >= 0 ? '+' : '-';
                         const cosTermSign = momentFromCos >= 0 ? '-' : '+';  // This term is subtracted in cross product
 
